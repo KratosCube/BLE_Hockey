@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="BLE_Hockey.Pages.ConnectPage"
+             xmlns:viewmodel="clr-namespace:BLE_Hockey.ViewModels"
+             x:DataType="viewmodel:ConnectPageViewModel"
+             Title="{Binding Title}">
+   
+    <HorizontalStackLayout>
+        <Button x:Name="ConnectToButton"
+                Grid.Row="1"
+                Grid.Column="0"
+                Margin="8"
+                Command="{Binding ConnectToDeviceCandidateAsyncCommand}"
+                IsEnabled="{Binding IsNotBusy}"
+                IsVisible="{Binding IsNotBusy}"
+                Style="{StaticResource ButtonOutline}"
+                Text="Connect" />
+
+        <Button x:Name="DisconnectFromButton"
+                Grid.Row="1"
+                Grid.Column="1"
+                Margin="8"
+                Command="{Binding DisconnectFromDeviceAsyncCommand}"
+                IsEnabled="{Binding IsNotBusy}"
+                IsVisible="{Binding IsNotBusy}"
+                Style="{StaticResource ButtonOutline}"
+                Text="Disconnect" />
+    </HorizontalStackLayout>
+</ContentPage>

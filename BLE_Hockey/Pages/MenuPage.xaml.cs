@@ -1,13 +1,12 @@
-
 namespace BLE_Hockey.Pages;
 
-public partial class ScanConnectPage : ContentPage
+public partial class MenuPage : ContentPage
 {
-    public ScanConnectPage(ScanConnectViewModel viewModel)
-    {
-        InitializeComponent();
-        BindingContext = viewModel;
+	public MenuPage()
+	{
+		InitializeComponent();
     }
+
     protected override void OnNavigatedTo(NavigatedToEventArgs args)
     {
         base.OnNavigatedTo(args);
@@ -27,5 +26,10 @@ public partial class ScanConnectPage : ContentPage
     protected override void OnDisappearing()
     {
         base.OnDisappearing();
+    }
+
+    private void Settings_Clicked(object sender, EventArgs e)
+    {
+        Navigation.PushAsync(new AboutPage());
     }
 }

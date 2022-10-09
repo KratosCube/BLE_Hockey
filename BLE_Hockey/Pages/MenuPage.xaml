@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="BLE_Hockey.Pages.MenuPage"
+             x:DataType="viewmodel:MenuPageViewModel"
+             xmlns:model="clr-namespace:BLE_Hockey.Model"
+             xmlns:viewmodel="clr-namespace:BLE_Hockey.ViewModels"
+             Title="Menu">
+    
+    <ScrollView>
+        <VerticalStackLayout
+            Spacing="25"
+            Padding="30,0"
+            VerticalOptions="Center">
+
+        <Button x:Name="Settings"
+                Margin="8"
+                Clicked="Settings_Clicked"              
+                Style="{StaticResource ButtonOutline}"
+                Text="Settings"/>
+
+        <Button x:Name="Game"
+                Margin="8"
+                Style="{StaticResource ButtonOutline}"
+                Text="Game"/>
+
+        <Button x:Name="About"
+                Margin="8"
+                Style="{StaticResource ButtonOutline}"
+                Text="About"/>
+
+        </VerticalStackLayout>
+        </ScrollView>
+
+</ContentPage>

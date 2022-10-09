@@ -1,7 +1,6 @@
 ﻿namespace BLE_Hockey.Services
 {
 
-
     public class BLEService
     {
 

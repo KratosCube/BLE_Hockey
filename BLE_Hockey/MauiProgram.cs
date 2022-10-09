@@ -23,6 +23,14 @@ public static class MauiProgram
         builder.Services.AddSingleton<IGeolocation>(Geolocation.Default);
         builder.Services.AddSingleton<IMap>(Map.Default);
 
+        builder.Services.AddSingleton<MainPageViewModel>();
+        builder.Services.AddSingleton<MainPage>();
+
+        builder.Services.AddSingleton<ConnectPageViewModel>();
+        builder.Services.AddSingleton<ConnectPage>();
+        builder.Services.AddSingleton<MenuPageViewModel>();
+        builder.Services.AddSingleton<MenuPage>();
+
         return builder.Build();
 	}
 }

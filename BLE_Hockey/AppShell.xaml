@@ -10,8 +10,18 @@
     
     
     <ShellContent
-        ContentTemplate="{DataTemplate pages:ScanConnectPage}"
-        Route="ScanConnectPage">
+        ContentTemplate="{DataTemplate pages:MenuPage}"
+        Route="MenuPage">
     </ShellContent>
+    <FlyoutItem Title="Scan and select device">
+        <ShellContent ContentTemplate="{DataTemplate pages:MainPage}"
+                      Route="HomePage" >
+        </ShellContent>
+    </FlyoutItem>
+    <FlyoutItem Title="ConnectPage">
+        <ShellContent ContentTemplate="{DataTemplate pages:ConnectPage}"
+                      Route="ConnectPage" >
+        </ShellContent>
+    </FlyoutItem>
 
 </Shell>
