@@ -28,6 +28,7 @@ public static class MauiProgram
 
         builder.Services.AddSingleton<ConnectPageViewModel>();
         builder.Services.AddSingleton<ConnectPage>();
+
         builder.Services.AddSingleton<MenuPageViewModel>();
         builder.Services.AddSingleton<MenuPage>();
 

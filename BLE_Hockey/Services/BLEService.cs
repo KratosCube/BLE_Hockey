@@ -44,7 +44,7 @@
                             Id = systemDevice.Id,
                             Name = systemDevice.Name,
                         });
-                        await ShowToastAsync($"Found {systemDevice.State.ToString().ToLower()} device {systemDevice.Name}.");
+                        await ShowToastAsync("Najité " +/*{systemDevice.State.ToString().ToLower()}*/$"zařízení {systemDevice.Name}.");
                     }
                 }
                 await Adapter.StartScanningForDevicesAsync(HockeyTargetUuids.HockeyTargetServiceUuids);

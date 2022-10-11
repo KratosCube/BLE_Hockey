@@ -13,12 +13,17 @@
         ContentTemplate="{DataTemplate pages:MenuPage}"
         Route="MenuPage">
     </ShellContent>
-    <FlyoutItem Title="Scan and select device">
+    <FlyoutItem Title="Menu">
+        <ShellContent ContentTemplate="{DataTemplate pages:MenuPage}"
+                      Route="MenuPage" >
+        </ShellContent>
+    </FlyoutItem>
+    <FlyoutItem Title="Hledání zařízení">
         <ShellContent ContentTemplate="{DataTemplate pages:MainPage}"
                       Route="HomePage" >
         </ShellContent>
     </FlyoutItem>
-    <FlyoutItem Title="ConnectPage">
+    <FlyoutItem Title="Připojení na zařízení">
         <ShellContent ContentTemplate="{DataTemplate pages:ConnectPage}"
                       Route="ConnectPage" >
         </ShellContent>

@@ -1,3 +1,6 @@
+using Plugin.BLE.Android;
+using Xamarin.Google.Crypto.Tink.Subtle;
+
 namespace BLE_Hockey.ViewModels;
 
 public partial class ConnectPageViewModel : BaseViewModel
@@ -7,6 +10,10 @@ public partial class ConnectPageViewModel : BaseViewModel
 
     public IAsyncRelayCommand ConnectToDeviceCandidateAsyncCommand { get; }
     public IAsyncRelayCommand DisconnectFromDeviceAsyncCommand { get; }
+    public IAsyncRelayCommand LedOnAsyncCommand { get; }
+    public IService ButtonPressedService { get; private set; }
+
+    public ICharacteristic ButtonPressedCharacteristic { get; private set; }
     public ConnectPageViewModel(BLEService bluetoothLEService)
     {
         Title = $"Connect Page";
@@ -16,8 +23,12 @@ public partial class ConnectPageViewModel : BaseViewModel
         ConnectToDeviceCandidateAsyncCommand = new AsyncRelayCommand(ConnectToDeviceCandidateAsync);
 
         DisconnectFromDeviceAsyncCommand = new AsyncRelayCommand(DisconnectFromDeviceAsync);
+
+        //LedOnAsyncCommand = new AsyncRelayCommand(LedOnDeviceAsync);
     }
 
+    [ObservableProperty]
+    ushort buttonPressedValue;
 
     private async Task ConnectToDeviceCandidateAsync()
     {
@@ -85,6 +96,33 @@ public partial class ConnectPageViewModel : BaseViewModel
             }
 
             BleService.Device = await BleService.Adapter.ConnectToKnownDeviceAsync(BleService.NewDeviceCandidateFromHomePage.Id);
+
+
+            if (BleService.Device.State == DeviceState.Connected)
+            {
+                ButtonPressedService = await BleService.Device.GetServiceAsync(HockeyTargetUuids.HockeyTargetServiceUuid);
+                if (ButtonPressedService != null)
+                {
+                    ButtonPressedCharacteristic = await ButtonPressedService.GetCharacteristicAsync(HockeyTargetUuids.HockeyTargetCharacteristicUuid);
+                    if (ButtonPressedCharacteristic != null)
+                    {
+                        if (ButtonPressedCharacteristic.CanUpdate)
+                        {
+                            Title = $"{BleService.Device.Name}";
+
+                            #region save device id to storage
+                            await SecureStorage.Default.SetAsync("device_name", $"{BleService.Device.Name}");
+                            await SecureStorage.Default.SetAsync("device_id", $"{BleService.Device.Id}");
+                            #endregion save device id to storage
+
+                            ButtonPressedCharacteristic.ValueUpdated += ButtonStateCharacteristic_ValueUpdated;
+                            await ButtonPressedCharacteristic.StartUpdatesAsync();
+                        }
+                    }
+                }
+            }
+
+
         }
 
         catch (Exception ex)
@@ -98,8 +136,30 @@ public partial class ConnectPageViewModel : BaseViewModel
         }
     }
 
+    private void ButtonStateCharacteristic_ValueUpdated(object sender, CharacteristicUpdatedEventArgs e)
+    {
+        var bytes = e.Characteristic.Value;
+        const byte buttonPressedValueFormat = 0x01;
 
-    private async Task DisconnectFromDeviceAsync()
+        byte flags = bytes[0];
+        bool isHeartRateValueSizeLong = (flags & buttonPressedValueFormat) != 0;
+        ButtonPressedValue = isHeartRateValueSizeLong ? BitConverter.ToUInt16(bytes, 1) : bytes[1];
+    }
+
+    private async Task LedOnDeviceAsync(object sender, CharacteristicUpdatedEventArgs e)
+    {
+        var bytes = e.Characteristic.Value;
+        const byte buttonPressedValueFormat = 0x01;
+
+        byte flags = bytes[0];
+        bool isHeartRateValueSizeLong = (flags & buttonPressedValueFormat) != 0;
+        ButtonPressedValue = isHeartRateValueSizeLong ? BitConverter.ToUInt16(bytes, 1) : bytes[1];
+        //await ButtonPressedCharacteristic.WriteAsync();
+
+    }
+
+
+        private async Task DisconnectFromDeviceAsync()
     {
         if (IsBusy)
         {
@@ -143,6 +203,7 @@ public partial class ConnectPageViewModel : BaseViewModel
         finally
         {
             IsBusy = false;
+            ButtonPressedValue = 0;
             BleService.Device?.Dispose();
             BleService.Device = null;
             await Shell.Current.GoToAsync("//MainPage", true);

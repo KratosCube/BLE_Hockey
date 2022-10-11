@@ -1,16 +1,27 @@
+using Plugin.BLE.Android;
+using Xamarin.Google.Crypto.Tink.Subtle;
+
 namespace BLE_Hockey.Pages;
 
 public partial class ConnectPage : ContentPage
 {
-	public ConnectPage(ConnectPageViewModel viewModel)
+    public BLEService BluetoothLEService { get; private set; }
+
+    public IService ButtonPressedService { get; private set; }
+
+    public ICharacteristic ButtonPressedCharacteristic { get; private set; }
+
+    public ConnectPage(ConnectPageViewModel viewModel, BLEService bluetoothLEService)
 	{
 		InitializeComponent();
         BindingContext = viewModel;
+        BluetoothLEService = bluetoothLEService;
     }
 
-    protected override void OnNavigatedTo(NavigatedToEventArgs args)
+    protected async override void OnNavigatedTo(NavigatedToEventArgs args)
     {
         base.OnNavigatedTo(args);
+
     }
 
     protected override void OnNavigatedFrom(NavigatedFromEventArgs args)
@@ -28,4 +39,7 @@ public partial class ConnectPage : ContentPage
     {
         base.OnDisappearing();
     }
+
+
+    
 }

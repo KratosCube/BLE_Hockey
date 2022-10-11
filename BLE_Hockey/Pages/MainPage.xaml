@@ -81,7 +81,7 @@
                 IsEnabled="{Binding IsNotScanning}"
                 IsVisible="{Binding IsNotScanning}"
                 Style="{StaticResource ButtonOutline}"
-                Text="Scan nearby devices" />
+                Text="Najít terče" />
 
             <Button x:Name="CheckBluetoothButton"
                 Margin="8"
@@ -89,7 +89,7 @@
                 IsEnabled="{Binding IsNotScanning}"
                 IsVisible="{Binding IsNotScanning}"
                 Style="{StaticResource ButtonOutline}"
-                Text="Check Bluetooth" />
+                Text="Kontrola bluetooth" />
 
             <ActivityIndicator x:Name="HomePageActivityIndicator"
                            Grid.ColumnSpan="2"

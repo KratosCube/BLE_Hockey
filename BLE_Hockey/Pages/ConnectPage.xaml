@@ -5,9 +5,27 @@
              xmlns:viewmodel="clr-namespace:BLE_Hockey.ViewModels"
              x:DataType="viewmodel:ConnectPageViewModel"
              Title="{Binding Title}">
-   
-    <HorizontalStackLayout>
-        <Button x:Name="ConnectToButton"
+    <Grid x:Name="HeartRatePageGrid"
+          ColumnDefinitions="*,*"
+          ColumnSpacing="6"
+          RowDefinitions="*,Auto"
+          RowSpacing="0"
+          BackgroundColor="{AppThemeBinding Light={StaticResource LightBackground}, Dark={StaticResource DarkBackground}}">
+        <HorizontalStackLayout>
+        <Label Grid.Row="0"
+                       Text="{Binding ButtonPressedValue}"
+                       Style="{StaticResource ExtraLargeLabel}"
+                       HorizontalOptions="CenterAndExpand"/>
+
+            <Label x:Name="BatteryLevelLabel" 
+                       Grid.Row="1"
+                       Text="Battery level is 0 %"
+                       Style="{StaticResource LargeLabel}"
+                       HorizontalOptions="CenterAndExpand"/>
+            
+        </HorizontalStackLayout>
+
+    <Button x:Name="ConnectToButton"
                 Grid.Row="1"
                 Grid.Column="0"
                 Margin="8"
@@ -17,7 +35,7 @@
                 Style="{StaticResource ButtonOutline}"
                 Text="Connect" />
 
-        <Button x:Name="DisconnectFromButton"
+    <Button x:Name="DisconnectFromButton"
                 Grid.Row="1"
                 Grid.Column="1"
                 Margin="8"
@@ -26,5 +44,15 @@
                 IsVisible="{Binding IsNotBusy}"
                 Style="{StaticResource ButtonOutline}"
                 Text="Disconnect" />
-    </HorizontalStackLayout>
+
+        <Button x:Name="LedOnButton"
+                Grid.Row="2"
+                Grid.Column="1"
+                Margin="8"
+                Command="{Binding LedOnAsyncCommand}"
+                IsEnabled="{Binding IsNotBusy}"
+                IsVisible="{Binding IsNotBusy}"
+                Style="{StaticResource ButtonOutline}"
+                Text="LedOn" />
+    </Grid>
 </ContentPage>
