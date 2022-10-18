@@ -1,5 +1,4 @@
-using Plugin.BLE.Android;
-using Xamarin.Google.Crypto.Tink.Subtle;
+
 
 namespace BLE_Hockey.Pages;
 

@@ -1,5 +1,6 @@
-using Plugin.BLE.Android;
-using Xamarin.Google.Crypto.Tink.Subtle;
+
+
+using System.Text;
 
 namespace BLE_Hockey.ViewModels;
 
@@ -10,7 +11,8 @@ public partial class ConnectPageViewModel : BaseViewModel
 
     public IAsyncRelayCommand ConnectToDeviceCandidateAsyncCommand { get; }
     public IAsyncRelayCommand DisconnectFromDeviceAsyncCommand { get; }
-    public IAsyncRelayCommand LedOnAsyncCommand { get; }
+    public IAsyncRelayCommand ReadUTF8DataAsyncCommand { get; }
+    public IAsyncRelayCommand WriteDataAsyncCommand { get; }
     public IService ButtonPressedService { get; private set; }
 
     public ICharacteristic ButtonPressedCharacteristic { get; private set; }
@@ -24,11 +26,57 @@ public partial class ConnectPageViewModel : BaseViewModel
 
         DisconnectFromDeviceAsyncCommand = new AsyncRelayCommand(DisconnectFromDeviceAsync);
 
-        //LedOnAsyncCommand = new AsyncRelayCommand(LedOnDeviceAsync);
+        ReadUTF8DataAsyncCommand = new AsyncRelayCommand(UTF8DataAsync);
+
+        WriteDataAsyncCommand = new AsyncRelayCommand(DeviceWriteDataAsync);
     }
 
     [ObservableProperty]
-    ushort buttonPressedValue;
+    string buttonPressedValue;
+
+    [ObservableProperty]
+    string writeCommand;
+
+    async Task UTF8DataAsync()
+    {
+        ButtonPressedService = await BleService.Device.GetServiceAsync(HockeyTargetUuids.HockeyTargetServiceUuid);
+        if (ButtonPressedService != null)
+        {
+            ButtonPressedCharacteristic = await ButtonPressedService.GetCharacteristicAsync(HockeyTargetUuids.HockeyTargetCharacteristicUuid);
+            if (ButtonPressedCharacteristic != null)
+            {
+                ButtonPressedCharacteristic.ValueUpdated += DeviceReadDataUtf8Async;
+                await ButtonPressedCharacteristic.StartUpdatesAsync();
+            }
+        }
+    }
+
+    private void DeviceReadDataUtf8Async(object sender, CharacteristicUpdatedEventArgs e)
+    {
+        var utf8 = Encoding.UTF8;
+        var bytes = e.Characteristic.Value;
+        string text = utf8.GetString(bytes, 0, bytes.Length);
+
+
+        //splitting text
+        string[] separatingStrings = { "[", "]" };
+        string[] words = text.Split(separatingStrings, System.StringSplitOptions.RemoveEmptyEntries);
+        ButtonPressedValue = words[2];
+    }
+
+    async Task DeviceWriteDataAsync()
+    {
+        byte[] bytes = Encoding.ASCII.GetBytes(writeCommand);
+        ButtonPressedService = await BleService.Device.GetServiceAsync(HockeyTargetUuids.HockeyTargetServiceUuid);
+        if (ButtonPressedService != null)
+        {
+            ButtonPressedCharacteristic = await ButtonPressedService.GetCharacteristicAsync(HockeyTargetUuids.HockeyTargetCharacteristicUuid);
+            if (ButtonPressedCharacteristic != null)
+            {
+                await ButtonPressedCharacteristic.WriteAsync(bytes);
+            }
+        }
+    }
 
     private async Task ConnectToDeviceCandidateAsync()
     {
@@ -114,9 +162,6 @@ public partial class ConnectPageViewModel : BaseViewModel
                             await SecureStorage.Default.SetAsync("device_name", $"{BleService.Device.Name}");
                             await SecureStorage.Default.SetAsync("device_id", $"{BleService.Device.Id}");
                             #endregion save device id to storage
-
-                            ButtonPressedCharacteristic.ValueUpdated += ButtonStateCharacteristic_ValueUpdated;
-                            await ButtonPressedCharacteristic.StartUpdatesAsync();
                         }
                     }
                 }
@@ -136,30 +181,7 @@ public partial class ConnectPageViewModel : BaseViewModel
         }
     }
 
-    private void ButtonStateCharacteristic_ValueUpdated(object sender, CharacteristicUpdatedEventArgs e)
-    {
-        var bytes = e.Characteristic.Value;
-        const byte buttonPressedValueFormat = 0x01;
-
-        byte flags = bytes[0];
-        bool isHeartRateValueSizeLong = (flags & buttonPressedValueFormat) != 0;
-        ButtonPressedValue = isHeartRateValueSizeLong ? BitConverter.ToUInt16(bytes, 1) : bytes[1];
-    }
-
-    private async Task LedOnDeviceAsync(object sender, CharacteristicUpdatedEventArgs e)
-    {
-        var bytes = e.Characteristic.Value;
-        const byte buttonPressedValueFormat = 0x01;
-
-        byte flags = bytes[0];
-        bool isHeartRateValueSizeLong = (flags & buttonPressedValueFormat) != 0;
-        ButtonPressedValue = isHeartRateValueSizeLong ? BitConverter.ToUInt16(bytes, 1) : bytes[1];
-        //await ButtonPressedCharacteristic.WriteAsync();
-
-    }
-
-
-        private async Task DisconnectFromDeviceAsync()
+    private async Task DisconnectFromDeviceAsync()
     {
         if (IsBusy)
         {
@@ -203,7 +225,7 @@ public partial class ConnectPageViewModel : BaseViewModel
         finally
         {
             IsBusy = false;
-            ButtonPressedValue = 0;
+            ButtonPressedValue = "0l";
             BleService.Device?.Dispose();
             BleService.Device = null;
             await Shell.Current.GoToAsync("//MainPage", true);

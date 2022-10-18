@@ -11,21 +11,22 @@
           RowDefinitions="*,Auto"
           RowSpacing="0"
           BackgroundColor="{AppThemeBinding Light={StaticResource LightBackground}, Dark={StaticResource DarkBackground}}">
-        <HorizontalStackLayout>
-        <Label Grid.Row="0"
+
+        <StackLayout>
+            <Label Grid.Row="0"
                        Text="{Binding ButtonPressedValue}"
                        Style="{StaticResource ExtraLargeLabel}"
-                       HorizontalOptions="CenterAndExpand"/>
+                       HorizontalOptions="CenterAndExpand"
+                       />
 
-            <Label x:Name="BatteryLevelLabel" 
-                       Grid.Row="1"
-                       Text="Battery level is 0 %"
-                       Style="{StaticResource LargeLabel}"
-                       HorizontalOptions="CenterAndExpand"/>
-            
-        </HorizontalStackLayout>
 
-    <Button x:Name="ConnectToButton"
+            <Entry x:Name="entry"
+       Placeholder="Enter Command"
+       Text="{Binding WriteCommand}"
+                   Style="{StaticResource ButtonOutline}"/>
+
+
+            <Button x:Name="ConnectToButton"
                 Grid.Row="1"
                 Grid.Column="0"
                 Margin="8"
@@ -35,7 +36,7 @@
                 Style="{StaticResource ButtonOutline}"
                 Text="Connect" />
 
-    <Button x:Name="DisconnectFromButton"
+            <Button x:Name="DisconnectFromButton"
                 Grid.Row="1"
                 Grid.Column="1"
                 Margin="8"
@@ -45,14 +46,25 @@
                 Style="{StaticResource ButtonOutline}"
                 Text="Disconnect" />
 
-        <Button x:Name="LedOnButton"
+            <Button x:Name="ReadData"
                 Grid.Row="2"
-                Grid.Column="1"
+                Grid.Column="0"
                 Margin="8"
-                Command="{Binding LedOnAsyncCommand}"
+                Command="{Binding ReadUTF8DataAsyncCommand}"
                 IsEnabled="{Binding IsNotBusy}"
                 IsVisible="{Binding IsNotBusy}"
                 Style="{StaticResource ButtonOutline}"
-                Text="LedOn" />
+                Text="Read Data" />
+
+            <Button x:Name="WriteData"
+                Grid.Row="2"
+                Grid.Column="0"
+                Margin="8"
+                Command="{Binding WriteDataAsyncCommand}"
+                IsEnabled="{Binding IsNotBusy}"
+                IsVisible="{Binding IsNotBusy}"
+                Style="{StaticResource ButtonOutline}"
+                Text="Write Data" />
+        </StackLayout>
     </Grid>
 </ContentPage>
