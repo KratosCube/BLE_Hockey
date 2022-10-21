@@ -6,13 +6,6 @@
     xmlns:pages="clr-namespace:BLE_Hockey.Pages"
     Shell.FlyoutBehavior="Flyout">
 
-    
-    
-    
-    <ShellContent
-        ContentTemplate="{DataTemplate pages:MenuPage}"
-        Route="MenuPage">
-    </ShellContent>
     <FlyoutItem Title="Menu">
         <ShellContent ContentTemplate="{DataTemplate pages:MenuPage}"
                       Route="MenuPage" >
