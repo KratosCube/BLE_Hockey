@@ -20,7 +20,7 @@
     </FlyoutItem>
     <FlyoutItem Title="Hledání zařízení">
         <ShellContent ContentTemplate="{DataTemplate pages:MainPage}"
-                      Route="HomePage" >
+                      Route="MainPage" >
         </ShellContent>
     </FlyoutItem>
     <FlyoutItem Title="Připojení na zařízení">
