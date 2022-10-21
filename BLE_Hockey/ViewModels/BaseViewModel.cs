@@ -7,6 +7,24 @@
         bool isBusy;
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsNotHitted))]
+        bool isHitted;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(IsNotScanning))]
         bool isScanning;
 
@@ -15,5 +33,7 @@
 
         public bool IsNotBusy => !IsBusy;
         public bool IsNotScanning => !isScanning;
+
+        public bool IsNotHitted => !IsHitted;
     }
 }

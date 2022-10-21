@@ -1,8 +1,8 @@
 ﻿namespace BLE_Hockey.Pages;
 
-public partial class MainPage : ContentPage
+public partial class TargetFinderPage : ContentPage
 {
-	public MainPage(MainPageViewModel viewModel)
+	public TargetFinderPage(TargetFinderPageViewModel viewModel)
 	{
 		InitializeComponent();
         BindingContext = viewModel;

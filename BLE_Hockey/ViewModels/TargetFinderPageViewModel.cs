@@ -1,6 +1,6 @@
 ﻿namespace BLE_Hockey.ViewModels;
 
-public partial class MainPageViewModel : BaseViewModel
+public partial class TargetFinderPageViewModel : BaseViewModel
 {
     BLEService BluetoothLEService;
 
@@ -10,7 +10,7 @@ public partial class MainPageViewModel : BaseViewModel
     public IAsyncRelayCommand ScanNearbyDevicesAsyncCommand { get; }
     public IAsyncRelayCommand CheckBluetoothAvailabilityAsyncCommand { get; }
 
-    public MainPageViewModel(BLEService bluetoothLEService)
+    public TargetFinderPageViewModel(BLEService bluetoothLEService)
     {
         Title = $"Scan and select device";
 

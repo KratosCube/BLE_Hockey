@@ -1,7 +1,4 @@
-
-
 using System.Text;
-
 namespace BLE_Hockey.ViewModels;
 
 public partial class ConnectPageViewModel : BaseViewModel
@@ -14,7 +11,6 @@ public partial class ConnectPageViewModel : BaseViewModel
     public IAsyncRelayCommand ReadUTF8DataAsyncCommand { get; }
     public IAsyncRelayCommand WriteDataAsyncCommand { get; }
     public IService ButtonPressedService { get; private set; }
-
     public ICharacteristic ButtonPressedCharacteristic { get; private set; }
     public ConnectPageViewModel(BLEService bluetoothLEService)
     {
@@ -57,15 +53,26 @@ public partial class ConnectPageViewModel : BaseViewModel
         var bytes = e.Characteristic.Value;
         string text = utf8.GetString(bytes, 0, bytes.Length);
 
-
         //splitting text
         string[] separatingStrings = { "[", "]" };
         string[] words = text.Split(separatingStrings, System.StringSplitOptions.RemoveEmptyEntries);
-        ButtonPressedValue = words[2];
+        //ButtonPressedValue = words[2];
+        char lastCharacter = words[2][words[2].Length-1];
+        ButtonPressedValue = Convert.ToString(lastCharacter);
+
+        if(ButtonPressedValue == "1")
+        {
+            IsHitted = true;
+        }
+        else
+        {
+            IsHitted = false;
+        }
     }
 
     async Task DeviceWriteDataAsync()
     {
+        // LedR On [0L0211]
         byte[] bytes = Encoding.ASCII.GetBytes(writeCommand);
         ButtonPressedService = await BleService.Device.GetServiceAsync(HockeyTargetUuids.HockeyTargetServiceUuid);
         if (ButtonPressedService != null)
@@ -118,7 +125,7 @@ public partial class ConnectPageViewModel : BaseViewModel
         try
         {
             IsBusy = true;
-
+            IsHitted = true;
             if (BleService.Device != null)
             {
                 if (BleService.Device.State == DeviceState.Connected)
@@ -178,6 +185,7 @@ public partial class ConnectPageViewModel : BaseViewModel
         finally
         {
             IsBusy = false;
+            IsHitted = false;
         }
     }
 
@@ -228,7 +236,7 @@ public partial class ConnectPageViewModel : BaseViewModel
             ButtonPressedValue = "0l";
             BleService.Device?.Dispose();
             BleService.Device = null;
-            await Shell.Current.GoToAsync("//MainPage", true);
+            await Shell.Current.GoToAsync("//TargetFinderPage", true);
         }
     }
 

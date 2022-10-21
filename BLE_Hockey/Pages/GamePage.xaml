@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="BLE_Hockey.Pages.GamePage"
+             Title="GamePage">
+
+
+    <Grid x:Name="GamePageGrid"
+          BackgroundColor="{AppThemeBinding Light={StaticResource LightBackground}, Dark={StaticResource DarkBackground}}">
+
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+
+        <StackLayout
+            Grid.Row="2"
+            Grid.Column="1">
+            <Label
+                       Text="{Binding GameOutput}"
+                       Style="{StaticResource ExtraLargeLabel}"
+                       HorizontalOptions="CenterAndExpand"
+                       />
+            <Label
+                       Text="{Binding LastByteValue}"
+                       Style="{StaticResource ExtraLargeLabel}"
+                       HorizontalOptions="CenterAndExpand"
+                       />
+            <Label
+                       Text="{Binding FirstByteValue}"
+                       Style="{StaticResource ExtraLargeLabel}"
+                       HorizontalOptions="CenterAndExpand"
+                       />
+
+
+
+            <Entry x:Name="entry"
+                Placeholder="Enter Command"
+                Text="{Binding WriteCommand}"
+                Style="{StaticResource ButtonOutline}"/>
+
+            <Button x:Name="ReadData"
+                Margin="8"
+                Command="{Binding ReadUTF8DataAsyncCommand}"
+                IsEnabled="{Binding IsNotBusy}"
+                IsVisible="{Binding IsNotBusy}"
+                Style="{StaticResource ButtonOutline}"
+                Text="Read Data" />
+
+            <Button x:Name="WriteData"
+                Margin="8"
+                Command="{Binding WriteDataAsyncCommand}"
+                IsEnabled="{Binding IsNotBusy}"
+                IsVisible="{Binding IsNotBusy}"
+                Style="{StaticResource ButtonOutline}"
+                Text="Write Data" />
+        </StackLayout>
+
+        <Image
+            Grid.Row="0"
+                Grid.Column="0"
+                Source="lz_target.png"
+                IsEnabled="{Binding IsNotHitted}"
+                IsVisible="{Binding IsNotHitted}"
+                HorizontalOptions="StartAndExpand"
+            VerticalOptions="StartAndExpand"/>
+        <Image
+            Grid.Row="0"
+                Grid.Column="0"
+                Source="lz_target_hit.png"
+                IsEnabled="{Binding IsHitted}"
+                IsVisible="{Binding IsHitted}"
+                HorizontalOptions="StartAndExpand"
+            VerticalOptions="StartAndExpand" />
+
+
+
+
+        <Image
+                Grid.Row="0"
+                Grid.Column="2"
+                Source="lz_target.png"
+                IsEnabled="{Binding IsNotHitted}"
+                IsVisible="{Binding IsNotHitted}"
+                HorizontalOptions="EndAndExpand"
+            VerticalOptions="StartAndExpand" />
+        <Image
+                Grid.Row="0"
+                Grid.Column="2"
+                Source="lz_target_hit.png"
+                IsEnabled="{Binding IsHitted}"
+                IsVisible="{Binding IsHitted}"
+                HorizontalOptions="EndAndExpand"
+            VerticalOptions="StartAndExpand" />
+
+
+
+
+
+        <Image
+                Grid.Row="3"
+                Grid.Column="0"
+                Source="lz_target.png"
+                IsEnabled="{Binding IsNotHitted}"
+                IsVisible="{Binding IsNotHitted}"
+                HorizontalOptions="StartAndExpand"
+            VerticalOptions="EndAndExpand"  />
+        <Image
+                Grid.Row="3"
+                Grid.Column="0"
+                Source="lz_target_hit.png"
+                IsEnabled="{Binding IsHitted}"
+                IsVisible="{Binding IsHitted}"
+                HorizontalOptions="StartAndExpand"
+            VerticalOptions="EndAndExpand"  />
+
+
+
+
+
+        <Image
+                Grid.Row="3"
+                Grid.Column="2"
+                Source="lz_target.png"
+                IsEnabled="{Binding IsNotHitted}"
+                IsVisible="{Binding IsNotHitted}"
+                HorizontalOptions="EndAndExpand"
+            VerticalOptions="EndAndExpand" />
+        <Image
+                Grid.Row="3"
+                Grid.Column="2"
+                Source="lz_target_hit.png"
+                IsEnabled="{Binding IsHitted}"
+                IsVisible="{Binding IsHitted}"
+                HorizontalOptions="EndAndExpand"
+            VerticalOptions="EndAndExpand" />
+
+
+    </Grid>
+</ContentPage>

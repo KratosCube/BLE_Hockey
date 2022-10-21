@@ -1,11 +1,13 @@
 namespace BLE_Hockey.Pages;
 
-public partial class MenuPage : ContentPage
+public partial class GamePage : ContentPage
 {
-	public MenuPage(MenuPageViewModel viewModel)
-	{
-		InitializeComponent();
+    public BLEService BluetoothLEService { get; private set; }
+    public GamePage(GamePageViewModel viewModel, BLEService bluetoothLEService)
+    {
+        InitializeComponent();
         BindingContext = viewModel;
+        BluetoothLEService = bluetoothLEService;
     }
 
     protected override void OnNavigatedTo(NavigatedToEventArgs args)

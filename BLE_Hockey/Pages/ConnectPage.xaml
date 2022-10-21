@@ -20,6 +20,7 @@
                        />
 
 
+
             <Entry x:Name="entry"
        Placeholder="Enter Command"
        Text="{Binding WriteCommand}"
@@ -65,6 +66,24 @@
                 IsVisible="{Binding IsNotBusy}"
                 Style="{StaticResource ButtonOutline}"
                 Text="Write Data" />
+
+
+            <Image
+                Source="lz_target.png"
+                IsEnabled="{Binding IsNotHitted}"
+                IsVisible="{Binding IsNotHitted}"
+                SemanticProperties.Description="Cute dot net bot waving hi to you!"
+                HeightRequest="200"
+                HorizontalOptions="Center" />
+
+            <Image
+                Source="lz_target_hit.png"
+                IsEnabled="{Binding IsHitted}"
+                IsVisible="{Binding IsHitted}"
+                SemanticProperties.Description="Cute dot net bot waving hi to you!"
+                HeightRequest="200"
+                HorizontalOptions="Center" />
+
         </StackLayout>
     </Grid>
 </ContentPage>

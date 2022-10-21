@@ -13,21 +13,26 @@
             Padding="30,0"
             VerticalOptions="Center">
 
-        <Button x:Name="Settings"
+        <Button x:Name="TargetFinder"
                 Margin="8"
-                Clicked="Settings_Clicked"              
+                Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:MenuPageViewModel}}, 
+                                                  Path=RouteTargetFinderPageAsyncCommand}"              
                 Style="{StaticResource ButtonOutline}"
-                Text="Settings"/>
+                Text="Najít terče"/>
+
+        <Button x:Name="ConnectToTarget"
+                Margin="8"
+                Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:MenuPageViewModel}}, 
+                                                  Path=RouteConnectPageAsyncCommand}"       
+                Style="{StaticResource ButtonOutline}"
+                Text="Připojit se k terči"/>
 
         <Button x:Name="Game"
                 Margin="8"
+                Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:MenuPageViewModel}}, 
+                                                  Path=RouteGamePageAsyncCommand}" 
                 Style="{StaticResource ButtonOutline}"
-                Text="Game"/>
-
-        <Button x:Name="About"
-                Margin="8"
-                Style="{StaticResource ButtonOutline}"
-                Text="About"/>
+                Text="Hra"/>
 
         </VerticalStackLayout>
         </ScrollView>
