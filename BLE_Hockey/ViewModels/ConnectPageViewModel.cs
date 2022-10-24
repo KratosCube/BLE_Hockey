@@ -51,16 +51,16 @@ public partial class ConnectPageViewModel : BaseViewModel
     {
         var utf8 = Encoding.UTF8;
         var bytes = e.Characteristic.Value;
-        string text = utf8.GetString(bytes, 0, bytes.Length);
+        //Decimal text = Convert.ToDecimal(bytes[0]);
 
         //splitting text
-        string[] separatingStrings = { "[", "]" };
-        string[] words = text.Split(separatingStrings, System.StringSplitOptions.RemoveEmptyEntries);
+        //string[] separatingStrings = { "[", "]" };
+        //string[] words = text.Split(separatingStrings, System.StringSplitOptions.RemoveEmptyEntries);
         //ButtonPressedValue = words[2];
-        char lastCharacter = words[2][words[2].Length-1];
-        ButtonPressedValue = Convert.ToString(lastCharacter);
+        //char lastCharacter = words[1][words[1].Length-1];
+        ButtonPressedValue = int.Parse.ToString("x");
 
-        if(ButtonPressedValue == "1")
+        if (ButtonPressedValue == "AA")
         {
             IsHitted = true;
         }

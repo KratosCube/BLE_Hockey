@@ -15,7 +15,7 @@ public partial class ConnectPage : ContentPage
         BluetoothLEService = bluetoothLEService;
     }
 
-    protected async override void OnNavigatedTo(NavigatedToEventArgs args)
+    protected override void OnNavigatedTo(NavigatedToEventArgs args)
     {
         base.OnNavigatedTo(args);
 

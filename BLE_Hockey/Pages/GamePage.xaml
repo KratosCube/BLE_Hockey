@@ -29,7 +29,7 @@
                        HorizontalOptions="CenterAndExpand"
                        />
             <Label
-                       Text="{Binding LastByteValue}"
+                       Text="{Binding HitCounter}"
                        Style="{StaticResource ExtraLargeLabel}"
                        HorizontalOptions="CenterAndExpand"
                        />

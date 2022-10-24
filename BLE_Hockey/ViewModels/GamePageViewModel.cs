@@ -22,7 +22,9 @@ public partial class GamePageViewModel : BaseViewModel
     }
 
     int loopCounter = 0;
-    int hitCounter = 0;
+
+    [ObservableProperty]
+    int hitCounter = 1;
 
     bool gameState = false;
 
@@ -43,14 +45,20 @@ public partial class GamePageViewModel : BaseViewModel
 
     async Task UTF8DataAsync()
     {
-        ButtonPressedService = await BleService.Device.GetServiceAsync(HockeyTargetUuids.HockeyTargetServiceUuid);
-        if (ButtonPressedService != null)
+        if (BleService.Device != null)
         {
-            ButtonPressedCharacteristic = await ButtonPressedService.GetCharacteristicAsync(HockeyTargetUuids.HockeyTargetCharacteristicUuid);
-            if (ButtonPressedCharacteristic != null)
+            if (BleService.Device.State == DeviceState.Connected)
             {
-                ButtonPressedCharacteristic.ValueUpdated += DeviceReadDataUtf8Async;
-                await ButtonPressedCharacteristic.StartUpdatesAsync();
+                ButtonPressedService = await BleService.Device.GetServiceAsync(HockeyTargetUuids.HockeyTargetServiceUuid);
+                if (ButtonPressedService != null)
+                {
+                    ButtonPressedCharacteristic = await ButtonPressedService.GetCharacteristicAsync(HockeyTargetUuids.HockeyTargetCharacteristicUuid);
+                    if (ButtonPressedCharacteristic != null)
+                    {
+                        ButtonPressedCharacteristic.ValueUpdated += DeviceReadDataUtf8Async;
+                        await ButtonPressedCharacteristic.StartUpdatesAsync();
+                    }
+                }
             }
         }
     }
@@ -71,14 +79,15 @@ public partial class GamePageViewModel : BaseViewModel
         char firstCharacter = words[2][words[2].Length-6];
         FirstByteValue = Convert.ToString(firstCharacter);
 
-        if (FirstByteValue == "A" || gameState)
+        if (FirstByteValue == "A" || gameState )
         {
-            GameOutput = "Won";
+            GameOutput = "";
             if (FirstByteValue == "A" && gameState == false)
             {
+
                 gameState = true;
                 IsHitted = true;
-                
+
             }
             if (LastByteValue == "1")
             {
@@ -91,7 +100,7 @@ public partial class GamePageViewModel : BaseViewModel
 
             if (IsHitted == false)
             {
-                hitCounter++;
+                HitCounter++;
                 IsHitted = false;
                 gameState = false;
             }
@@ -102,9 +111,9 @@ public partial class GamePageViewModel : BaseViewModel
             }
             loopCounter++;
         }
-        if(loopCounter >= 3)
+        if (loopCounter == 3)
         {
-            if(hitCounter >= 3)
+            if (hitCounter == 3)
             {
                 GameOutput = "Won";
             }
@@ -113,8 +122,9 @@ public partial class GamePageViewModel : BaseViewModel
                 GameOutput = "Lose";
             }
             ButtonPressedCharacteristic.StopUpdatesAsync();
+            HitCounter = 0;
             loopCounter = 0;
-            hitCounter = 0;
+
         }
 
     }
@@ -122,14 +132,23 @@ public partial class GamePageViewModel : BaseViewModel
     async Task DeviceWriteDataAsync()
     {
         // LedR On [0L0211]
-        byte[] bytes = Encoding.ASCII.GetBytes(writeCommand);
-        ButtonPressedService = await BleService.Device.GetServiceAsync(HockeyTargetUuids.HockeyTargetServiceUuid);
-        if (ButtonPressedService != null)
+        if (BleService.Device != null)
         {
-            ButtonPressedCharacteristic = await ButtonPressedService.GetCharacteristicAsync(HockeyTargetUuids.HockeyTargetCharacteristicUuid);
-            if (ButtonPressedCharacteristic != null)
+            if (BleService.Device.State == DeviceState.Connected)
             {
-                await ButtonPressedCharacteristic.WriteAsync(bytes);
+                if (writeCommand != null)
+                {
+                    byte[] bytes = Encoding.ASCII.GetBytes(writeCommand);
+                    ButtonPressedService = await BleService.Device.GetServiceAsync(HockeyTargetUuids.HockeyTargetServiceUuid);
+                    if (ButtonPressedService != null)
+                    {
+                        ButtonPressedCharacteristic = await ButtonPressedService.GetCharacteristicAsync(HockeyTargetUuids.HockeyTargetCharacteristicUuid);
+                        if (ButtonPressedCharacteristic != null)
+                        {
+                            await ButtonPressedCharacteristic.WriteAsync(bytes);
+                        }
+                    }
+                }
             }
         }
     }
