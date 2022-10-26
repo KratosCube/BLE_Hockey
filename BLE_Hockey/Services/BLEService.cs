@@ -4,7 +4,6 @@
     public class BLEService
     {
 
-
         public DeviceH NewDeviceCandidateFromHomePage { get; set; } = new();
         public List<DeviceH> DeviceCandidateList { get; private set; }
         public IBluetoothLE BluetoothLE { get; private set; }
@@ -45,6 +44,7 @@
                             Name = systemDevice.Name,
                         });
                         await ShowToastAsync("Najité " +/*{systemDevice.State.ToString().ToLower()}*/$"zařízení {systemDevice.Name}.");
+                        //await Adapter.ConnectToDeviceAsync(systemDevice);
                     }
                 }
                 await Adapter.StartScanningForDevicesAsync(HockeyTargetUuids.HockeyTargetServiceUuids);
@@ -59,9 +59,8 @@
         }
 
 
-
-        #region DeviceEventArgs
-        private async void Adapter_DeviceDiscovered(object sender, DeviceEventArgs e)
+    #region DeviceEventArgs
+    private async void Adapter_DeviceDiscovered(object sender, DeviceEventArgs e)
         {
             DeviceH deviceCandidate = DeviceCandidateList.FirstOrDefault(d => d.Id == e.Device.Id);
             if (deviceCandidate == null)

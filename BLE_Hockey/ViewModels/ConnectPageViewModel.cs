@@ -126,8 +126,7 @@ public partial class ConnectPageViewModel : BaseViewModel
                         if (!BleService.Device.Id.Equals(BleService.NewDeviceCandidateFromHomePage.Id))
                         {
                             Title = $"{BleService.NewDeviceCandidateFromHomePage.Name}";
-                            await DisconnectFromDeviceAsync();
-                            await BleService.ShowToastAsync($"{BleService.Device.Name} has been disconnected.");
+                            await BleService.ShowToastAsync($"{BleService.NewDeviceCandidateFromHomePage.Name} has been connected.");
                         }
                         #endregion another device
                     }

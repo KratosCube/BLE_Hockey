@@ -41,7 +41,7 @@
 
             <Button x:Name="ReadData"
                 Margin="8"
-                Command="{Binding ReadUTF8DataAsyncCommand}"
+                Command="{Binding StartGameAsyncCommand}"
                 IsEnabled="{Binding IsNotBusy}"
                 IsVisible="{Binding IsNotBusy}"
                 Text="Start Game" />

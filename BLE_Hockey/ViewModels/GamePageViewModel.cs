@@ -1,4 +1,5 @@
 ﻿using BLE_Hockey.Services;
+using Microsoft.Maui.Handlers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -7,7 +8,7 @@ namespace BLE_Hockey.ViewModels;
 public partial class GamePageViewModel : BaseViewModel
 {
     public BLEService BleService { get; private set; }
-    public IAsyncRelayCommand ReadUTF8DataAsyncCommand { get; }
+    public IAsyncRelayCommand StartGameAsyncCommand { get; }
     public IAsyncRelayCommand WriteDataAsyncCommand { get; }
     public IService ButtonPressedService { get; private set; }
     public ICharacteristic ButtonPressedCharacteristic { get; private set; }
@@ -17,7 +18,7 @@ public partial class GamePageViewModel : BaseViewModel
     {
         BleService = bluetoothLEService;
 
-        ReadUTF8DataAsyncCommand = new AsyncRelayCommand(UTF8DataAsync);
+        StartGameAsyncCommand = new AsyncRelayCommand(Game);
 
         WriteDataAsyncCommand = new AsyncRelayCommand(DeviceWriteDataAsync);
     }
@@ -61,6 +62,7 @@ public partial class GamePageViewModel : BaseViewModel
                     {
                         ButtonPressedCharacteristic.ValueUpdated += DeviceReadDataUtf8Async;
                         await ButtonPressedCharacteristic.StartUpdatesAsync();
+
                     }
                 }
             }
@@ -70,64 +72,67 @@ public partial class GamePageViewModel : BaseViewModel
 
     private int RandomPicker()
     {
-        Task.Delay(1000);
-        int number = rand.Next(0, 101);
+        
+        int number = rand.Next(0, 5);
         return number;
     }
-
-    private async void Game()
+    int state = 0;
+    async Task Game()
     {
+        ButtonPressedService = await BleService.Device.GetServiceAsync(HockeyTargetUuids.HockeyTargetServiceUuid);
 
-        //if 
+        ButtonPressedCharacteristic = await ButtonPressedService.GetCharacteristicAsync(HockeyTargetUuids.HockeyTargetCharacteristicUuid);
+
+        ButtonPressedCharacteristic.ValueUpdated += DeviceReadDataUtf8Async;
+        await ButtonPressedCharacteristic.StartUpdatesAsync();
 
 
-        if (randPickNum > 80 || gameState)
+
+        if (gameState == false)
         {
-            GameOutput = "";
-            if (FirstByteValue == "A" && gameState == false)
-            {
-
-                gameState = true;
-                IsHitted = true;
-
-            }
-            if (LastByteValue == "1")
-            {
-                IsHitted = false;
-
-            }
-        }
-        if (FirstByteValue == "0" && gameState)
-        {
-
-            if (IsHitted == false)
-            {
-                HitCounter++;
-                IsHitted = false;
-                gameState = false;
-            }
-            else
-            {
-                IsHitted = false;
-                gameState = false;
-            }
-            loopCounter++;
-        }
-        if (loopCounter == 3)
-        {
-            if (hitCounter == 3)
-            {
-                GameOutput = "Won";
-            }
-            else
-            {
-                GameOutput = "Lose";
-            }
-            await ButtonPressedCharacteristic.StopUpdatesAsync();
+            gameState = true;
+            IsHitted = false;
             HitCounter = 0;
             loopCounter = 0;
-
+            GameOutput = "Game started";
         }
+        if (gameState)
+        {
+            Thread.Sleep(500);
+            state = RandomPicker();
+            if (state == 1)
+            {
+                IsHitted = true;
+
+                if (ButtonPressedValue == "AA")
+                {
+                    HitCounter++;
+                    IsHitted = false;
+                    ButtonPressedValue ="";
+                }
+                else if (ButtonPressedValue != "AA")
+                {
+                    IsHitted = true;
+                }
+                loopCounter++;
+            }
+            if (loopCounter == 3)
+            {
+                if (hitCounter == 3)
+                {
+                    GameOutput = "Won";
+                }
+                else
+                {
+                    GameOutput = "Lose";
+                }
+                await ButtonPressedCharacteristic.StopUpdatesAsync();
+                HitCounter = 0;
+                loopCounter = 0;
+                return;
+            }
+        }
+
     }
 
 
@@ -137,7 +142,11 @@ public partial class GamePageViewModel : BaseViewModel
         var utf8 = Encoding.UTF8;
         var bytes = e.Characteristic.Value;
         ButtonPressedValue = bytes[0].ToString("X");
-        
+
+
+
+
+
 
     }
 
