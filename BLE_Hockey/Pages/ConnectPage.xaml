@@ -9,13 +9,11 @@
           ColumnDefinitions="*,*"
           ColumnSpacing="6"
           RowDefinitions="*,Auto"
-          RowSpacing="0"
-          BackgroundColor="{AppThemeBinding Light={StaticResource LightBackground}, Dark={StaticResource DarkBackground}}">
+          RowSpacing="0">
 
         <StackLayout>
             <Label Grid.Row="0"
                        Text="{Binding ButtonPressedValue}"
-                       Style="{StaticResource ExtraLargeLabel}"
                        HorizontalOptions="CenterAndExpand"
                        />
 
@@ -23,8 +21,7 @@
 
             <Entry x:Name="entry"
        Placeholder="Enter Command"
-       Text="{Binding WriteCommand}"
-                   Style="{StaticResource ButtonOutline}"/>
+       Text="{Binding WriteCommand}"/>
 
 
             <Button x:Name="ConnectToButton"
@@ -34,7 +31,6 @@
                 Command="{Binding ConnectToDeviceCandidateAsyncCommand}"
                 IsEnabled="{Binding IsNotBusy}"
                 IsVisible="{Binding IsNotBusy}"
-                Style="{StaticResource ButtonOutline}"
                 Text="Connect" />
 
             <Button x:Name="DisconnectFromButton"
@@ -44,7 +40,6 @@
                 Command="{Binding DisconnectFromDeviceAsyncCommand}"
                 IsEnabled="{Binding IsNotBusy}"
                 IsVisible="{Binding IsNotBusy}"
-                Style="{StaticResource ButtonOutline}"
                 Text="Disconnect" />
 
             <Button x:Name="ReadData"
@@ -54,7 +49,6 @@
                 Command="{Binding ReadUTF8DataAsyncCommand}"
                 IsEnabled="{Binding IsNotBusy}"
                 IsVisible="{Binding IsNotBusy}"
-                Style="{StaticResource ButtonOutline}"
                 Text="Read Data" />
 
             <Button x:Name="WriteData"
@@ -64,7 +58,6 @@
                 Command="{Binding WriteDataAsyncCommand}"
                 IsEnabled="{Binding IsNotBusy}"
                 IsVisible="{Binding IsNotBusy}"
-                Style="{StaticResource ButtonOutline}"
                 Text="Write Data" />
 
 

@@ -16,22 +16,19 @@
         <Button x:Name="TargetFinder"
                 Margin="8"
                 Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:MenuPageViewModel}}, 
-                                                  Path=RouteTargetFinderPageAsyncCommand}"              
-                Style="{StaticResource ButtonOutline}"
+                                                  Path=RouteTargetFinderPageAsyncCommand}"
                 Text="Najít terče"/>
 
         <Button x:Name="ConnectToTarget"
                 Margin="8"
                 Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:MenuPageViewModel}}, 
-                                                  Path=RouteConnectPageAsyncCommand}"       
-                Style="{StaticResource ButtonOutline}"
+                                                  Path=RouteConnectPageAsyncCommand}"
                 Text="Připojit se k terči"/>
 
         <Button x:Name="Game"
                 Margin="8"
                 Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:MenuPageViewModel}}, 
-                                                  Path=RouteGamePageAsyncCommand}" 
-                Style="{StaticResource ButtonOutline}"
+                                                  Path=RouteGamePageAsyncCommand}"
                 Text="Hra"/>
 
         </VerticalStackLayout>

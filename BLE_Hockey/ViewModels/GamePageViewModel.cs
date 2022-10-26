@@ -1,5 +1,6 @@
 ﻿using BLE_Hockey.Services;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace BLE_Hockey.ViewModels;
 
@@ -10,7 +11,7 @@ public partial class GamePageViewModel : BaseViewModel
     public IAsyncRelayCommand WriteDataAsyncCommand { get; }
     public IService ButtonPressedService { get; private set; }
     public ICharacteristic ButtonPressedCharacteristic { get; private set; }
-
+    Random rand = new Random();
 
     public GamePageViewModel(BLEService bluetoothLEService)
     {
@@ -22,6 +23,9 @@ public partial class GamePageViewModel : BaseViewModel
     }
 
     int loopCounter = 0;
+
+
+    int randPickNum = 0;
 
     [ObservableProperty]
     int hitCounter = 1;
@@ -63,23 +67,21 @@ public partial class GamePageViewModel : BaseViewModel
         }
     }
 
-    private void DeviceReadDataUtf8Async(object sender, CharacteristicUpdatedEventArgs e)
+
+    private int RandomPicker()
     {
-        var utf8 = Encoding.UTF8;
-        var bytes = e.Characteristic.Value;
-        string text = utf8.GetString(bytes, 0, bytes.Length);
+        Task.Delay(1000);
+        int number = rand.Next(0, 101);
+        return number;
+    }
 
-        //splitting text
-        string[] separatingStrings = { "[", "]" };
-        string[] words = text.Split(separatingStrings, System.StringSplitOptions.RemoveEmptyEntries);
-        //ButtonPressedValue = words[2];
-        char lastCharacter = words[2][words[2].Length-1];
-        LastByteValue = Convert.ToString(lastCharacter);
+    private async void Game()
+    {
 
-        char firstCharacter = words[2][words[2].Length-6];
-        FirstByteValue = Convert.ToString(firstCharacter);
+        //if 
 
-        if (FirstByteValue == "A" || gameState )
+
+        if (randPickNum > 80 || gameState)
         {
             GameOutput = "";
             if (FirstByteValue == "A" && gameState == false)
@@ -121,11 +123,21 @@ public partial class GamePageViewModel : BaseViewModel
             {
                 GameOutput = "Lose";
             }
-            ButtonPressedCharacteristic.StopUpdatesAsync();
+            await ButtonPressedCharacteristic.StopUpdatesAsync();
             HitCounter = 0;
             loopCounter = 0;
 
         }
+    }
+
+
+
+    private async void DeviceReadDataUtf8Async(object sender, CharacteristicUpdatedEventArgs e)
+    {
+        var utf8 = Encoding.UTF8;
+        var bytes = e.Characteristic.Value;
+        ButtonPressedValue = bytes[0].ToString("X");
+        
 
     }
 

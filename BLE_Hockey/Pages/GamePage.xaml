@@ -5,8 +5,7 @@
              Title="GamePage">
 
 
-    <Grid x:Name="GamePageGrid"
-          BackgroundColor="{AppThemeBinding Light={StaticResource LightBackground}, Dark={StaticResource DarkBackground}}">
+    <Grid x:Name="GamePageGrid">
 
         <Grid.RowDefinitions>
             <RowDefinition/>
@@ -25,41 +24,33 @@
             Grid.Column="1">
             <Label
                        Text="{Binding GameOutput}"
-                       Style="{StaticResource ExtraLargeLabel}"
                        HorizontalOptions="CenterAndExpand"
                        />
             <Label
                        Text="{Binding HitCounter}"
-                       Style="{StaticResource ExtraLargeLabel}"
                        HorizontalOptions="CenterAndExpand"
                        />
             <Label
                        Text="{Binding FirstByteValue}"
-                       Style="{StaticResource ExtraLargeLabel}"
                        HorizontalOptions="CenterAndExpand"
                        />
 
-
-
             <Entry x:Name="entry"
                 Placeholder="Enter Command"
-                Text="{Binding WriteCommand}"
-                Style="{StaticResource ButtonOutline}"/>
+                Text="{Binding WriteCommand}"/>
 
             <Button x:Name="ReadData"
                 Margin="8"
                 Command="{Binding ReadUTF8DataAsyncCommand}"
                 IsEnabled="{Binding IsNotBusy}"
                 IsVisible="{Binding IsNotBusy}"
-                Style="{StaticResource ButtonOutline}"
-                Text="Read Data" />
+                Text="Start Game" />
 
             <Button x:Name="WriteData"
                 Margin="8"
                 Command="{Binding WriteDataAsyncCommand}"
                 IsEnabled="{Binding IsNotBusy}"
                 IsVisible="{Binding IsNotBusy}"
-                Style="{StaticResource ButtonOutline}"
                 Text="Write Data" />
         </StackLayout>
 

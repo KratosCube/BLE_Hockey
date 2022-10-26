@@ -41,12 +41,10 @@
                               VerticalOptions="CenterAndExpand">
                                 <Label Grid.Row="0"
                                    Text="Scan for nearby Bluetooth LE devices."
-                                   Style="{StaticResource LargeLabel}"
                                    HorizontalOptions="CenterAndExpand"/>
 
                                 <Label Grid.Row="1"
                                    Text="Check Bluetooth."
-                                   Style="{StaticResource LargeLabel}"
                                    HorizontalOptions="CenterAndExpand"/>
                             </Grid>
                         </StackLayout>
@@ -57,7 +55,7 @@
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="model:DeviceH">
                             <Grid Padding="10">
-                                <Frame Style="{StaticResource CardView}">
+                                <Frame>
                                     <Frame.GestureRecognizers>
                                         <TapGestureRecognizer 
                                         Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:TargetFinderPageViewModel}}, 
@@ -65,8 +63,8 @@
                                         CommandParameter="{Binding .}"/>
                                     </Frame.GestureRecognizers>
                                     <VerticalStackLayout Padding="8">
-                                        <Label Style="{StaticResource BaseLabel}" Text="{Binding Name}" />
-                                        <Label Style="{StaticResource MicroLabel}" Text="{Binding Id}" />
+                                        <Label Text="{Binding Name}" />
+                                        <Label Text="{Binding Id}" />
                                     </VerticalStackLayout>
                                 </Frame>
                             </Grid>
@@ -80,7 +78,6 @@
                 Command="{Binding ScanNearbyDevicesAsyncCommand}"
                 IsEnabled="{Binding IsNotScanning}"
                 IsVisible="{Binding IsNotScanning}"
-                Style="{StaticResource ButtonOutline}"
                 Text="Najít terče" />
 
             <Button x:Name="CheckBluetoothButton"
@@ -88,7 +85,6 @@
                 Command="{Binding CheckBluetoothAvailabilityAsyncCommand}"
                 IsEnabled="{Binding IsNotScanning}"
                 IsVisible="{Binding IsNotScanning}"
-                Style="{StaticResource ButtonOutline}"
                 Text="Kontrola bluetooth" />
 
             <ActivityIndicator x:Name="HomePageActivityIndicator"
