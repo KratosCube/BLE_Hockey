@@ -10,20 +10,6 @@
         [NotifyPropertyChangedFor(nameof(IsNotHitted))]
         bool isHitted;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(IsNotScanning))]
         bool isScanning;

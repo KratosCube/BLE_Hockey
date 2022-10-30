@@ -18,26 +18,22 @@ public partial class GamePageViewModel : BaseViewModel
     {
         BleService = bluetoothLEService;
 
-        StartGameAsyncCommand = new AsyncRelayCommand(Game);
+        StartGameAsyncCommand = new AsyncRelayCommand(UTF8DataAsync);
 
         WriteDataAsyncCommand = new AsyncRelayCommand(DeviceWriteDataAsync);
+
+
     }
 
     int loopCounter = 0;
 
-
-    int randPickNum = 0;
-
     [ObservableProperty]
-    int hitCounter = 1;
+    int hitCounter = 0;
 
     bool gameState = false;
 
     [ObservableProperty]
     string lastByteValue;
-
-    [ObservableProperty]
-    string firstByteValue;
 
     [ObservableProperty]
     string gameOutput;
@@ -62,6 +58,10 @@ public partial class GamePageViewModel : BaseViewModel
                     {
                         ButtonPressedCharacteristic.ValueUpdated += DeviceReadDataUtf8Async;
                         await ButtonPressedCharacteristic.StartUpdatesAsync();
+                        await Game();
+
+
+
 
                     }
                 }
@@ -69,85 +69,125 @@ public partial class GamePageViewModel : BaseViewModel
         }
     }
 
-
+    public static String GetTimestamp(DateTime value)
+    {
+        return value.ToString("ss");
+    }
     private int RandomPicker()
     {
-        
-        int number = rand.Next(0, 5);
+        int number = rand.Next(0, 2);
         return number;
     }
     int state = 0;
+    int startTime;
+    int endTime;
+    bool gameIsRunning = false;
     async Task Game()
     {
-        ButtonPressedService = await BleService.Device.GetServiceAsync(HockeyTargetUuids.HockeyTargetServiceUuid);
 
-        ButtonPressedCharacteristic = await ButtonPressedService.GetCharacteristicAsync(HockeyTargetUuids.HockeyTargetCharacteristicUuid);
-
-        ButtonPressedCharacteristic.ValueUpdated += DeviceReadDataUtf8Async;
-        await ButtonPressedCharacteristic.StartUpdatesAsync();
-
-
-
-        if (gameState == false)
+        IsHitted = true;
+        gameIsRunning = true;
+        if (gameIsRunning)
         {
-            gameState = true;
-            IsHitted = false;
-            HitCounter = 0;
-            loopCounter = 0;
-            GameOutput = "Game started";
-        }
-        if (gameState)
-        {
-            Thread.Sleep(500);
-            state = RandomPicker();
-            if (state == 1)
+            switch (gameState)
             {
-                IsHitted = true;
+                case false:
+                    //start of game
+                    if (loopCounter == 0)
+                    {
+                        gameState = true;
+                        state = RandomPicker();
+                        IsHitted = false;
+                        GameOutput = "Start Game";
 
-                if (ButtonPressedValue == "AA")
-                {
-                    HitCounter++;
-                    IsHitted = false;
-                    ButtonPressedValue ="";
-                }
-                else if (ButtonPressedValue != "AA")
-                {
-                    IsHitted = true;
-                }
-                loopCounter++;
-            }
-            if (loopCounter == 3)
-            {
-                if (hitCounter == 3)
-                {
-                    GameOutput = "Won";
-                }
-                else
-                {
-                    GameOutput = "Lose";
-                }
-                await ButtonPressedCharacteristic.StopUpdatesAsync();
-                HitCounter = 0;
-                loopCounter = 0;
-                return;
+                    }
+                    //trought game
+                    else if (loopCounter != 0 && loopCounter != 3)
+                    {
+                        gameState = true;
+                        state = RandomPicker();
+                        IsHitted = false;
+                        GameOutput = "";
+                    }
+                    //end of game
+                    else if (loopCounter >= 3)
+                    {
+                        if (hitCounter >= 3)
+                        {
+                            GameOutput = "Won";
+                        }
+                        else
+                        {
+                            GameOutput = "Lose";
+                        }
+                        await ButtonPressedCharacteristic.StopUpdatesAsync();
+                        HitCounter = 0;
+                        loopCounter = 0;
+                        gameState = false;
+                        gameIsRunning = false;
+                        return;
+                    }
+                    break;
+
+                case true:
+                    if (state == 1)
+                    {
+                        if (IsHitted == true)
+                        {
+                        }
+                            startTime = Convert.ToInt32(GetTimestamp(DateTime.Now));
+                        endTime = Convert.ToInt32(GetTimestamp(DateTime.Now))-5;
+                        while (startTime > endTime)
+                        {
+                            IsHitted = true;
+                            if (ButtonPressedValue == "AA")
+                            {
+                                IsHitted = false;
+                                ButtonPressedValue = "";
+                                break;
+                            }
+                            endTime = Convert.ToInt32(GetTimestamp(DateTime.Now))-5;
+                        }
+                        //nepovedlo se strefit terč
+                        if (IsHitted == true)
+                        {
+                            gameState = false;
+                            IsHitted = false;
+                            loopCounter++;
+                            state = 0;
+                        }
+                        //povedlo se strefit terč
+                        else if(IsHitted == false)
+                        {
+                            gameState = false;
+                            IsHitted = false;
+                            HitCounter++;
+                            loopCounter++;
+                            state = 0;
+                        }
+                    }
+                    else
+                    {
+                        startTime = Convert.ToInt32(GetTimestamp(DateTime.Now));
+                        endTime = Convert.ToInt32(GetTimestamp(DateTime.Now))-5;
+                        while (startTime > endTime)
+                        {
+                            endTime = Convert.ToInt32(GetTimestamp(DateTime.Now))-5;
+                        }
+                        gameState = false;
+                        IsHitted = false;
+                        ButtonPressedValue = "";
+                        state = 0;
+                    }
+                    break;
             }
         }
-
     }
-
-
-
     private async void DeviceReadDataUtf8Async(object sender, CharacteristicUpdatedEventArgs e)
     {
         var utf8 = Encoding.UTF8;
         var bytes = e.Characteristic.Value;
         ButtonPressedValue = bytes[0].ToString("X");
-
-
-
-
-
-
     }
 
     async Task DeviceWriteDataAsync()

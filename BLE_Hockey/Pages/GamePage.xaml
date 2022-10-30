@@ -30,11 +30,6 @@
                        Text="{Binding HitCounter}"
                        HorizontalOptions="CenterAndExpand"
                        />
-            <Label
-                       Text="{Binding FirstByteValue}"
-                       HorizontalOptions="CenterAndExpand"
-                       />
-
             <Entry x:Name="entry"
                 Placeholder="Enter Command"
                 Text="{Binding WriteCommand}"/>
