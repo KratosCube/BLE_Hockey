@@ -33,7 +33,7 @@ public partial class ConnectPageViewModel : BaseViewModel
     [ObservableProperty]
     string writeCommand;
 
-    async Task UTF8DataAsync()
+    public async Task UTF8DataAsync()
     {
         ButtonPressedService = await BleService.Device.GetServiceAsync(HockeyTargetUuids.HockeyTargetServiceUuid);
         if (ButtonPressedService != null)

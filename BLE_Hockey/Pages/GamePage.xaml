@@ -30,6 +30,14 @@
                        Text="{Binding HitCounter}"
                        HorizontalOptions="CenterAndExpand"
                        />
+            <Label
+                       Text="{Binding LoopCounter}"
+                       HorizontalOptions="CenterAndExpand"
+                       />
+            <Label
+                       Text="{Binding ButtonPressedValue}"
+                       HorizontalOptions="CenterAndExpand"
+                       />
             <Entry x:Name="entry"
                 Placeholder="Enter Command"
                 Text="{Binding WriteCommand}"/>
@@ -73,18 +81,18 @@
                 Grid.Row="0"
                 Grid.Column="2"
                 Source="lz_target.png"
-                IsEnabled="{Binding IsNotHitted}"
-                IsVisible="{Binding IsNotHitted}"
-                HorizontalOptions="EndAndExpand"
-            VerticalOptions="StartAndExpand" />
+                IsEnabled="{Binding IsNotHitted1}"
+                IsVisible="{Binding IsNotHitted1}"
+                HorizontalOptions="StartAndExpand"
+            VerticalOptions="StartAndExpand"  />
         <Image
-                Grid.Row="0"
-                Grid.Column="2"
+                Grid.Row="3"
+                Grid.Column="0"
                 Source="lz_target_hit.png"
-                IsEnabled="{Binding IsHitted}"
-                IsVisible="{Binding IsHitted}"
-                HorizontalOptions="EndAndExpand"
-            VerticalOptions="StartAndExpand" />
+                IsEnabled="{Binding IsHitted1}"
+                IsVisible="{Binding IsHitted1}"
+                HorizontalOptions="StartAndExpand"
+            VerticalOptions="EndAndExpand"  />
 
 
 
@@ -94,16 +102,6 @@
                 Grid.Row="3"
                 Grid.Column="0"
                 Source="lz_target.png"
-                IsEnabled="{Binding IsNotHitted}"
-                IsVisible="{Binding IsNotHitted}"
-                HorizontalOptions="StartAndExpand"
-            VerticalOptions="EndAndExpand"  />
-        <Image
-                Grid.Row="3"
-                Grid.Column="0"
-                Source="lz_target_hit.png"
-                IsEnabled="{Binding IsHitted}"
-                IsVisible="{Binding IsHitted}"
                 HorizontalOptions="StartAndExpand"
             VerticalOptions="EndAndExpand"  />
 
@@ -115,16 +113,6 @@
                 Grid.Row="3"
                 Grid.Column="2"
                 Source="lz_target.png"
-                IsEnabled="{Binding IsNotHitted}"
-                IsVisible="{Binding IsNotHitted}"
-                HorizontalOptions="EndAndExpand"
-            VerticalOptions="EndAndExpand" />
-        <Image
-                Grid.Row="3"
-                Grid.Column="2"
-                Source="lz_target_hit.png"
-                IsEnabled="{Binding IsHitted}"
-                IsVisible="{Binding IsHitted}"
                 HorizontalOptions="EndAndExpand"
             VerticalOptions="EndAndExpand" />
 
