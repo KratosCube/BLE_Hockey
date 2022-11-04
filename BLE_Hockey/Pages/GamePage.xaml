@@ -86,13 +86,13 @@
                 HorizontalOptions="StartAndExpand"
             VerticalOptions="StartAndExpand"  />
         <Image
-                Grid.Row="3"
-                Grid.Column="0"
+                Grid.Row="0"
+                Grid.Column="2"
                 Source="lz_target_hit.png"
                 IsEnabled="{Binding IsHitted1}"
                 IsVisible="{Binding IsHitted1}"
                 HorizontalOptions="StartAndExpand"
-            VerticalOptions="EndAndExpand"  />
+            VerticalOptions="StartAndExpand"  />
 
 
 

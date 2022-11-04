@@ -12,7 +12,7 @@
 
 
         [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(IsNotHitted))]
+        [NotifyPropertyChangedFor(nameof(IsNotHitted1))]
         bool isHitted1;
 
 

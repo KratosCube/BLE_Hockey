@@ -10,7 +10,6 @@
         public IAdapter Adapter { get; private set; }
         public IDevice Device { get; set; }
 
-
         public BLEService()
         {
             BluetoothLE = CrossBluetoothLE.Current;
