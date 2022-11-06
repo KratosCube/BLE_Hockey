@@ -9,19 +9,22 @@ namespace BLE_Hockey.ViewModels;
 public partial class GamePageViewModel : BaseViewModel
 {
     public BLEService BleService { get; private set; }
+
+    protected readonly IAdapter Adapter;
     public IAsyncRelayCommand StartGameAsyncCommand { get; }
-    public IAsyncRelayCommand WriteDataAsyncCommand { get; }
+    public IAsyncRelayCommand ReadDataAsyncCommand { get; }
     public IService ButtonPressedService { get; private set; }
     public ICharacteristic ButtonPressedCharacteristic { get; private set; }
     Random rand = new Random();
 
     public GamePageViewModel(BLEService bluetoothLEService)
     {
+
         BleService = bluetoothLEService;
 
-        StartGameAsyncCommand = new AsyncRelayCommand(UTF8DataAsync);
+        StartGameAsyncCommand = new AsyncRelayCommand(StartGame);
 
-        WriteDataAsyncCommand = new AsyncRelayCommand(DeviceWriteDataAsync);
+        ReadDataAsyncCommand = new AsyncRelayCommand(UTF8DataAsync);
 
 
     }
@@ -45,6 +48,9 @@ public partial class GamePageViewModel : BaseViewModel
     [ObservableProperty]
     string writeCommand;
 
+    [ObservableProperty]
+    string stateColor;
+
 
     int state = 0;
     int startTime;
@@ -52,6 +58,26 @@ public partial class GamePageViewModel : BaseViewModel
     bool gameIsRunning = false;
     int target;
 
+    int connectedDevices = 0;
+
+    async Task StartGame()
+    {
+        if (BleService.Device != null)
+        {
+            if (BleService.Device.State == DeviceState.Connected)
+            {
+                if (connectedDevices == 2)
+                {
+                    await Task.Run(async () =>
+                    {
+                        await Task.Delay(1000);
+                        await Game();
+                    });
+                }
+            }
+        }
+
+    }
 
     async Task UTF8DataAsync()
     {
@@ -59,7 +85,7 @@ public partial class GamePageViewModel : BaseViewModel
         {
             IsScanning = true;
             List<DeviceH> deviceCandidates = await BleService.ScanForDevicesAsync();
-
+            
             if (deviceCandidates.Count == 0)
             {
                 await BleService.ShowToastAsync($"Unable to find nearby Bluetooth LE devices. Try again.");
@@ -72,28 +98,46 @@ public partial class GamePageViewModel : BaseViewModel
 
             foreach (var deviceCandidate in deviceCandidates)
             {
-                FoundDevices.Add(deviceCandidate);
-                BleService.NewDeviceCandidateFromHomePage = deviceCandidate;
-                await ConnectToDeviceCandidateAsync();
-
-                if (BleService.Device != null)
+                
+                try
                 {
-                    if (BleService.Device.State == DeviceState.Connected)
+                    FoundDevices.Add(deviceCandidate);
+                    BleService.Device = await BleService.Adapter.ConnectToKnownDeviceAsync(deviceCandidate.Id);
+                    
+                }
+                catch(Exception ex)
+                {
+                    FoundDevices.Remove(deviceCandidate);
+                    await Shell.Current.DisplayAlert($"Unable to get nearby Bluetooth LE devices", $"{ex.Message}.", "OK");
+                }
+
+                finally
+                {
+                    if (BleService.Device != null)
                     {
-                        ButtonPressedService = await BleService.Device.GetServiceAsync(HockeyTargetUuids.HockeyTargetServiceUuid);
-                        if (ButtonPressedService != null)
+                        if (BleService.Device.State == DeviceState.Connected)
                         {
-                            ButtonPressedCharacteristic = await ButtonPressedService.GetCharacteristicAsync(HockeyTargetUuids.HockeyTargetCharacteristicUuid);
-                            if (ButtonPressedCharacteristic != null)
+                            StateColor = "Green";
+                            
+                            connectedDevices++;
+                            ButtonPressedService = await BleService.Device.GetServiceAsync(HockeyTargetUuids.HockeyTargetServiceUuid);
+                            if (ButtonPressedService != null)
                             {
-                                ButtonPressedCharacteristic.ValueUpdated += DeviceReadDataUtf8Async;
-                                await ButtonPressedCharacteristic.StartUpdatesAsync();
+                                ButtonPressedCharacteristic = await ButtonPressedService.GetCharacteristicAsync(HockeyTargetUuids.HockeyTargetCharacteristicUuid);
+                                if (ButtonPressedCharacteristic != null)
+                                {
+                                    ButtonPressedCharacteristic.ValueUpdated += DeviceReadDataUtf8Async;
+                                    await ButtonPressedCharacteristic.StartUpdatesAsync();
+                                    
+                                }
                             }
                         }
                     }
                 }
             }
         }
+
+        
         catch (Exception ex)
         {
             Debug.WriteLine($"Unable to get nearby Bluetooth LE devices: {ex.Message}");
@@ -103,15 +147,12 @@ public partial class GamePageViewModel : BaseViewModel
         {
             IsScanning = false;
         }
-        if (BleService.Device.State == DeviceState.Connected)
-        {
-            await Task.Run(async () =>
-        {
-            await Task.Delay(1000);
-            await Game();
-        });
-        }
     }
+    public async void CheckMyDevice(IDevice device)
+    {
+        await device.UpdateRssiAsync();
+    }
+
 
     private async Task ConnectToDeviceCandidateAsync()
     {
@@ -205,10 +246,13 @@ public partial class GamePageViewModel : BaseViewModel
         {
             Debug.WriteLine($"Unable to connect to {BleService.NewDeviceCandidateFromHomePage.Name} {BleService.NewDeviceCandidateFromHomePage.Id}: {ex.Message}.");
             await Shell.Current.DisplayAlert($"{BleService.NewDeviceCandidateFromHomePage.Name}", $"Unable to connect to {BleService.NewDeviceCandidateFromHomePage.Name}.", "OK");
+            StateColor = "Red";
+
         }
         finally
         {
             IsBusy = false;
+
         }
     }
     public static System.String GetTimestamp(DateTime value)
@@ -379,30 +423,7 @@ public partial class GamePageViewModel : BaseViewModel
         var utf8 = Encoding.UTF8;
         var bytes = e.Characteristic.Value;
         ButtonPressedValue = bytes[0].ToString("X");
-    }
-
-    async Task DeviceWriteDataAsync()
-    {
-        // LedR On [0L0211]
-        if (BleService.Device != null)
-        {
-            if (BleService.Device.State == DeviceState.Connected)
-            {
-                if (writeCommand != null)
-                {
-                    byte[] bytes = Encoding.ASCII.GetBytes(writeCommand);
-                    ButtonPressedService = await BleService.Device.GetServiceAsync(HockeyTargetUuids.HockeyTargetServiceUuid);
-                    if (ButtonPressedService != null)
-                    {
-                        ButtonPressedCharacteristic = await ButtonPressedService.GetCharacteristicAsync(HockeyTargetUuids.HockeyTargetCharacteristicUuid);
-                        if (ButtonPressedCharacteristic != null)
-                        {
-                            await ButtonPressedCharacteristic.WriteAsync(bytes);
-                        }
-                    }
-                }
-            }
-        }
+        CheckMyDevice(BleService.Device);
     }
 }
 

@@ -2,15 +2,17 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="BLE_Hockey.Pages.GamePage"
+             x:DataType="viewmodel:GamePageViewModel"
+             xmlns:model="clr-namespace:BLE_Hockey.Model"
+             xmlns:viewmodel="clr-namespace:BLE_Hockey.ViewModels"
              Title="GamePage">
 
 
     <Grid x:Name="GamePageGrid">
 
         <Grid.RowDefinitions>
-            <RowDefinition/>
             <RowDefinition />
-            <RowDefinition />
+            <RowDefinition Height="2*"/>
             <RowDefinition />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -20,8 +22,9 @@
         </Grid.ColumnDefinitions>
 
         <StackLayout
-            Grid.Row="2"
-            Grid.Column="1">
+            Grid.Row="1"
+            Grid.Column="1"
+            VerticalOptions="EndAndExpand">
             <Label
                        Text="{Binding GameOutput}"
                        HorizontalOptions="CenterAndExpand"
@@ -36,25 +39,26 @@
                        />
             <Label
                        Text="{Binding ButtonPressedValue}"
-                       HorizontalOptions="CenterAndExpand"
+                       HorizontalOptions="EndAndExpand"
                        />
-            <Entry x:Name="entry"
-                Placeholder="Enter Command"
-                Text="{Binding WriteCommand}"/>
 
-            <Button x:Name="ReadData"
+
+            <Button x:Name="StartGame"
                 Margin="8"
                 Command="{Binding StartGameAsyncCommand}"
                 IsEnabled="{Binding IsNotBusy}"
                 IsVisible="{Binding IsNotBusy}"
-                Text="Start Game" />
+                Text="Start Game"
+                />
 
-            <Button x:Name="WriteData"
+            <Button x:Name="ReadData"
                 Margin="8"
-                Command="{Binding WriteDataAsyncCommand}"
+                Command="{Binding ReadDataAsyncCommand}"
                 IsEnabled="{Binding IsNotBusy}"
                 IsVisible="{Binding IsNotBusy}"
-                Text="Write Data" />
+                Text="Read Data"
+                BackgroundColor="{Binding StateColor}"
+                />
         </StackLayout>
 
         <Image
@@ -75,7 +79,31 @@
             VerticalOptions="StartAndExpand" />
 
 
-
+        <CollectionView x:Name="HomePageCollectionView"
+                            ItemsSource="{Binding FoundDevices}"
+                            BackgroundColor="Transparent"
+                            SelectionMode="None"
+                        Grid.Row="1"
+                Grid.Column="2">
+            <CollectionView.ItemsLayout>
+                <GridItemsLayout  Orientation="Vertical"/>
+            </CollectionView.ItemsLayout>
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="model:DeviceH">
+                    <Grid Padding="10">
+                        <Frame
+                            >
+                            <VerticalStackLayout Padding="2">
+                                <Label Text="{Binding Name}"
+                                       />
+                                <Label Text="{Binding Rssi}"
+                                       />
+                            </VerticalStackLayout>
+                        </Frame>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
 
         <Image
                 Grid.Row="0"

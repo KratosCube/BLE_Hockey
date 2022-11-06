@@ -34,6 +34,7 @@
                 IReadOnlyList<IDevice> systemDevices = Adapter.GetSystemConnectedOrPairedDevices(HockeyTargetUuids.HockeyTargetServiceUuids);
                 foreach (var systemDevice in systemDevices)
                 {
+                    
                     DeviceH deviceCandidate = DeviceCandidateList.FirstOrDefault(d => d.Id == systemDevice.Id);
                     if (deviceCandidate == null)
                     {
@@ -41,12 +42,16 @@
                         {
                             Id = systemDevice.Id,
                             Name = systemDevice.Name,
+                            Rssi = systemDevice.Rssi,
                         });
                         await ShowToastAsync("Najité " +/*{systemDevice.State.ToString().ToLower()}*/$"zařízení {systemDevice.Name}.");
                         //await Adapter.ConnectToDeviceAsync(systemDevice);
+                        
                     }
+                    
                 }
                 await Adapter.StartScanningForDevicesAsync(HockeyTargetUuids.HockeyTargetServiceUuids);
+                
             }
             catch (Exception ex)
             {
@@ -58,8 +63,15 @@
         }
 
 
-    #region DeviceEventArgs
-    private async void Adapter_DeviceDiscovered(object sender, DeviceEventArgs e)
+
+
+
+
+
+        
+
+            #region DeviceEventArgs
+            private async void Adapter_DeviceDiscovered(object sender, DeviceEventArgs e)
         {
             DeviceH deviceCandidate = DeviceCandidateList.FirstOrDefault(d => d.Id == e.Device.Id);
             if (deviceCandidate == null)
@@ -80,6 +92,8 @@
                 try
                 {
                     await ShowToastAsync($"{e.Device.Name} connection is lost.");
+                    e.Device.Dispose();
+                    
                 }
                 catch
                 {
