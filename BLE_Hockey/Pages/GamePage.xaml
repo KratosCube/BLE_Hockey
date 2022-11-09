@@ -8,7 +8,8 @@
              Title="GamePage">
 
 
-    <Grid x:Name="GamePageGrid">
+    <Grid x:Name="GamePageGrid"
+          BackgroundColor="{x:Binding ConnectedBgColor}">
 
         <Grid.RowDefinitions>
             <RowDefinition />
@@ -25,59 +26,38 @@
             Grid.Row="1"
             Grid.Column="1"
             VerticalOptions="EndAndExpand">
+            
             <Label
-                       Text="{Binding GameOutput}"
-                       HorizontalOptions="CenterAndExpand"
-                       />
+                Text="{Binding GameOutput}"
+                HorizontalOptions="CenterAndExpand"/>
+            
             <Label
-                       Text="{Binding HitCounter}"
-                       HorizontalOptions="CenterAndExpand"
-                       />
+                Text="{Binding HitCounter}"
+                HorizontalOptions="CenterAndExpand"/>
+            
             <Label
-                       Text="{Binding LoopCounter}"
-                       HorizontalOptions="CenterAndExpand"
-                       />
+                Text="{Binding LoopCounter}"
+                HorizontalOptions="CenterAndExpand"/>
+            
             <Label
-                       Text="{Binding ButtonPressedValue}"
-                       HorizontalOptions="EndAndExpand"
-                       />
-
-
+                Text="{Binding ButtonPressedValue}"
+                HorizontalOptions="EndAndExpand"/>
+            
             <Button x:Name="StartGame"
                 Margin="8"
                 Command="{Binding StartGameAsyncCommand}"
                 IsEnabled="{Binding IsNotBusy}"
                 IsVisible="{Binding IsNotBusy}"
-                Text="Start Game"
-                />
+                Text="Start Game"/>
 
             <Button x:Name="ReadData"
                 Margin="8"
                 Command="{Binding ReadDataAsyncCommand}"
                 IsEnabled="{Binding IsNotBusy}"
                 IsVisible="{Binding IsNotBusy}"
-                Text="Read Data"
-                BackgroundColor="{Binding StateColor}"
-                />
+                Text="Read Data"/>
+            
         </StackLayout>
-
-        <Image
-            Grid.Row="0"
-                Grid.Column="0"
-                Source="lz_target.png"
-                IsEnabled="{Binding IsNotHitted}"
-                IsVisible="{Binding IsNotHitted}"
-                HorizontalOptions="StartAndExpand"
-            VerticalOptions="StartAndExpand"/>
-        <Image
-            Grid.Row="0"
-                Grid.Column="0"
-                Source="lz_target_hit.png"
-                IsEnabled="{Binding IsHitted}"
-                IsVisible="{Binding IsHitted}"
-                HorizontalOptions="StartAndExpand"
-            VerticalOptions="StartAndExpand" />
-
 
         <CollectionView x:Name="HomePageCollectionView"
                             ItemsSource="{Binding FoundDevices}"
@@ -91,13 +71,9 @@
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="model:DeviceH">
                     <Grid Padding="10">
-                        <Frame
-                            >
+                        <Frame>
                             <VerticalStackLayout Padding="2">
-                                <Label Text="{Binding Name}"
-                                       />
-                                <Label Text="{Binding Rssi}"
-                                       />
+                                <Label Text="{Binding Name}"/>
                             </VerticalStackLayout>
                         </Frame>
                     </Grid>
@@ -107,12 +83,31 @@
 
         <Image
                 Grid.Row="0"
+                Grid.Column="0"
+                Source="lz_logo_green.png"
+                IsEnabled="{Binding IsNotHitted}"
+                IsVisible="{Binding IsNotHitted}"
+                HorizontalOptions="StartAndExpand"
+                VerticalOptions="StartAndExpand"/>
+        
+        <Image
+                Grid.Row="0"
+                Grid.Column="0"
+                Source="lz_logo_red.png"
+                IsEnabled="{Binding IsHitted}"
+                IsVisible="{Binding IsHitted}"
+                HorizontalOptions="StartAndExpand"
+                VerticalOptions="StartAndExpand" />
+
+        <Image
+                Grid.Row="0"
                 Grid.Column="2"
-                Source="lz_target.png"
+                Source="lz_logo_green.png"
                 IsEnabled="{Binding IsNotHitted1}"
                 IsVisible="{Binding IsNotHitted1}"
-                HorizontalOptions="StartAndExpand"
-            VerticalOptions="StartAndExpand"  />
+                HorizontalOptions="EndAndExpand"
+                VerticalOptions="StartAndExpand"  />
+        
         <Image
                 Grid.Row="0"
                 Grid.Column="2"
@@ -120,29 +115,21 @@
                 IsEnabled="{Binding IsHitted1}"
                 IsVisible="{Binding IsHitted1}"
                 HorizontalOptions="StartAndExpand"
-            VerticalOptions="StartAndExpand"  />
-
-
-
-
-
+                VerticalOptions="StartAndExpand"  />
+        
         <Image
                 Grid.Row="3"
                 Grid.Column="0"
-                Source="lz_target.png"
+                Source="lz_logo_green.png"
                 HorizontalOptions="StartAndExpand"
-            VerticalOptions="EndAndExpand"  />
-
-
-
-
+                VerticalOptions="EndAndExpand"  />
 
         <Image
                 Grid.Row="3"
                 Grid.Column="2"
-                Source="lz_target.png"
+                Source="lz_logo_green.png"
                 HorizontalOptions="EndAndExpand"
-            VerticalOptions="EndAndExpand" />
+                VerticalOptions="EndAndExpand" />
 
 
     </Grid>

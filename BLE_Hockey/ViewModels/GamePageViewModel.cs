@@ -49,8 +49,7 @@ public partial class GamePageViewModel : BaseViewModel
     string writeCommand;
 
     [ObservableProperty]
-    string stateColor;
-
+    Color connectedBgColor;
 
     int state = 0;
     int startTime;
@@ -85,7 +84,7 @@ public partial class GamePageViewModel : BaseViewModel
         {
             IsScanning = true;
             List<DeviceH> deviceCandidates = await BleService.ScanForDevicesAsync();
-            
+
             if (deviceCandidates.Count == 0)
             {
                 await BleService.ShowToastAsync($"Unable to find nearby Bluetooth LE devices. Try again.");
@@ -98,17 +97,19 @@ public partial class GamePageViewModel : BaseViewModel
 
             foreach (var deviceCandidate in deviceCandidates)
             {
-                
+
                 try
                 {
                     FoundDevices.Add(deviceCandidate);
                     BleService.Device = await BleService.Adapter.ConnectToKnownDeviceAsync(deviceCandidate.Id);
-                    
+
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     FoundDevices.Remove(deviceCandidate);
                     await Shell.Current.DisplayAlert($"Unable to get nearby Bluetooth LE devices", $"{ex.Message}.", "OK");
+
+
                 }
 
                 finally
@@ -117,8 +118,8 @@ public partial class GamePageViewModel : BaseViewModel
                     {
                         if (BleService.Device.State == DeviceState.Connected)
                         {
-                            StateColor = "Green";
-                            
+                            ConnectedBgColor = Color.FromRgb(0, 255, 0);
+
                             connectedDevices++;
                             ButtonPressedService = await BleService.Device.GetServiceAsync(HockeyTargetUuids.HockeyTargetServiceUuid);
                             if (ButtonPressedService != null)
@@ -128,7 +129,7 @@ public partial class GamePageViewModel : BaseViewModel
                                 {
                                     ButtonPressedCharacteristic.ValueUpdated += DeviceReadDataUtf8Async;
                                     await ButtonPressedCharacteristic.StartUpdatesAsync();
-                                    
+
                                 }
                             }
                         }
@@ -137,7 +138,7 @@ public partial class GamePageViewModel : BaseViewModel
             }
         }
 
-        
+
         catch (Exception ex)
         {
             Debug.WriteLine($"Unable to get nearby Bluetooth LE devices: {ex.Message}");
@@ -246,7 +247,7 @@ public partial class GamePageViewModel : BaseViewModel
         {
             Debug.WriteLine($"Unable to connect to {BleService.NewDeviceCandidateFromHomePage.Name} {BleService.NewDeviceCandidateFromHomePage.Id}: {ex.Message}.");
             await Shell.Current.DisplayAlert($"{BleService.NewDeviceCandidateFromHomePage.Name}", $"Unable to connect to {BleService.NewDeviceCandidateFromHomePage.Name}.", "OK");
-            StateColor = "Red";
+
 
         }
         finally
@@ -324,8 +325,6 @@ public partial class GamePageViewModel : BaseViewModel
                         return;
                     }
                     break;
-
-
 
                 case true:
 
@@ -415,7 +414,6 @@ public partial class GamePageViewModel : BaseViewModel
                     break;
             }
         }
-
         await ButtonPressedCharacteristic.StopUpdatesAsync();
     }
     private void DeviceReadDataUtf8Async(object sender, CharacteristicUpdatedEventArgs e)

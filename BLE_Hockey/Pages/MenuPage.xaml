@@ -5,8 +5,11 @@
              x:DataType="viewmodel:MenuPageViewModel"
              xmlns:model="clr-namespace:BLE_Hockey.Model"
              xmlns:viewmodel="clr-namespace:BLE_Hockey.ViewModels"
+             xmlns:mct="clr-namespace:CommunityToolkit.Maui.Behaviors;assembly=CommunityToolkit.Maui"
              Title="Menu">
-    
+    <Page.Behaviors>
+        <mct:StatusBarBehavior StatusBarColor="{StaticResource Primary}"/>
+    </Page.Behaviors>
     <ScrollView>
         <VerticalStackLayout
             Spacing="25"

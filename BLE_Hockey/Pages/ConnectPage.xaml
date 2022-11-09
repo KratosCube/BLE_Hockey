@@ -5,78 +5,48 @@
              xmlns:viewmodel="clr-namespace:BLE_Hockey.ViewModels"
              x:DataType="viewmodel:ConnectPageViewModel"
              Title="{Binding Title}">
-    <Grid x:Name="HeartRatePageGrid"
-          ColumnDefinitions="*,*"
-          ColumnSpacing="6"
-          RowDefinitions="*,Auto"
-          RowSpacing="0">
+    <ScrollView>
 
-        <StackLayout>
-            <Label Grid.Row="0"
-                       Text="{Binding ButtonPressedValue}"
-                       HorizontalOptions="CenterAndExpand"
-                       />
+        <VerticalStackLayout
+                Spacing="25"
+                Padding="30,0"
+                VerticalOptions="Center">
 
-
+            <Label Text="{Binding ButtonPressedValue}"/>
 
             <Entry x:Name="entry"
-       Placeholder="Enter Command"
-       Text="{Binding WriteCommand}"/>
+                    Placeholder="Enter Command"
+                     Text="{Binding WriteCommand}"/>
 
 
             <Button x:Name="ConnectToButton"
-                Grid.Row="1"
-                Grid.Column="0"
-                Margin="8"
-                Command="{Binding ConnectToDeviceCandidateAsyncCommand}"
-                IsEnabled="{Binding IsNotBusy}"
-                IsVisible="{Binding IsNotBusy}"
-                Text="Connect" />
+                    Margin="8"
+                    Command="{Binding ConnectToDeviceCandidateAsyncCommand}"
+                    IsEnabled="{Binding IsNotBusy}"
+                    IsVisible="{Binding IsNotBusy}"
+                    Text="Connect" />
 
             <Button x:Name="DisconnectFromButton"
-                Grid.Row="1"
-                Grid.Column="1"
-                Margin="8"
-                Command="{Binding DisconnectFromDeviceAsyncCommand}"
-                IsEnabled="{Binding IsNotBusy}"
-                IsVisible="{Binding IsNotBusy}"
-                Text="Disconnect" />
+                    Margin="8"
+                    Command="{Binding DisconnectFromDeviceAsyncCommand}"
+                    IsEnabled="{Binding IsNotBusy}"
+                    IsVisible="{Binding IsNotBusy}"
+                    Text="Disconnect" />
 
             <Button x:Name="ReadData"
-                Grid.Row="2"
-                Grid.Column="0"
-                Margin="8"
-                Command="{Binding ReadUTF8DataAsyncCommand}"
-                IsEnabled="{Binding IsNotBusy}"
-                IsVisible="{Binding IsNotBusy}"
-                Text="Read Data" />
+                    Margin="8"
+                    Command="{Binding ReadUTF8DataAsyncCommand}"
+                    IsEnabled="{Binding IsNotBusy}"
+                    IsVisible="{Binding IsNotBusy}"
+                    Text="Read Data" />
 
             <Button x:Name="WriteData"
-                Grid.Row="2"
-                Grid.Column="0"
-                Margin="8"
-                Command="{Binding WriteDataAsyncCommand}"
-                IsEnabled="{Binding IsNotBusy}"
-                IsVisible="{Binding IsNotBusy}"
-                Text="Write Data" />
+                    Margin="8"
+                    Command="{Binding WriteDataAsyncCommand}"
+                    IsEnabled="{Binding IsNotBusy}"
+                    IsVisible="{Binding IsNotBusy}"
+                    Text="Write Data" />
 
-
-            <Image
-                Source="lz_target.png"
-                IsEnabled="{Binding IsNotHitted}"
-                IsVisible="{Binding IsNotHitted}"
-                SemanticProperties.Description="Cute dot net bot waving hi to you!"
-                HeightRequest="200"
-                HorizontalOptions="Center" />
-
-            <Image
-                Source="lz_target_hit.png"
-                IsEnabled="{Binding IsHitted}"
-                IsVisible="{Binding IsHitted}"
-                SemanticProperties.Description="Cute dot net bot waving hi to you!"
-                HeightRequest="200"
-                HorizontalOptions="Center" />
-
-        </StackLayout>
-    </Grid>
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>
