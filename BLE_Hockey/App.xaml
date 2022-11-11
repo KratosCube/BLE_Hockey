@@ -9,6 +9,12 @@
                 <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
                 <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
+
+            <Style x:Key="navstyle" TargetType="Shell">
+                <Setter Property="Shell.NavBarIsVisible" Value="False" />
+            </Style>
         </ResourceDictionary>
+
     </Application.Resources>
 </Application>

@@ -7,7 +7,8 @@
              x:DataType="viewmodel:TargetFinderPageViewModel"
              xmlns:model="clr-namespace:BLE_Hockey.Model"
              xmlns:viewmodel="clr-namespace:BLE_Hockey.ViewModels"
-             Title="{Binding Title}">
+             Title="{Binding Title}"
+             >
 
     <ScrollView>
         <VerticalStackLayout

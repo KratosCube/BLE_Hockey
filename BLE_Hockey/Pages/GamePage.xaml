@@ -5,8 +5,9 @@
              x:DataType="viewmodel:GamePageViewModel"
              xmlns:model="clr-namespace:BLE_Hockey.Model"
              xmlns:viewmodel="clr-namespace:BLE_Hockey.ViewModels"
-             Title="GamePage">
-
+             Title="GamePage"
+             Style="{StaticResource navstyle}">
+    
 
     <Grid x:Name="GamePageGrid"
           BackgroundColor="{x:Binding ConnectedBgColor}">

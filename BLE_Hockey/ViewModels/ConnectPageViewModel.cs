@@ -24,7 +24,10 @@ public partial class ConnectPageViewModel : BaseViewModel
 
         ReadUTF8DataAsyncCommand = new AsyncRelayCommand(UTF8DataAsync);
 
+
         WriteDataAsyncCommand = new AsyncRelayCommand(DeviceWriteDataAsync);
+
+        
     }
 
     [ObservableProperty]
@@ -32,6 +35,8 @@ public partial class ConnectPageViewModel : BaseViewModel
 
     [ObservableProperty]
     string writeCommand;
+
+
 
     public async Task UTF8DataAsync()
     {
