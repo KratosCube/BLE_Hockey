@@ -1,3 +1,4 @@
+using CommunityToolkit.Maui.Converters;
 using System.Text;
 namespace BLE_Hockey.ViewModels;
 
@@ -9,11 +10,15 @@ public partial class ConnectPageViewModel : BaseViewModel
     public IAsyncRelayCommand ConnectToDeviceCandidateAsyncCommand { get; }
     public IAsyncRelayCommand DisconnectFromDeviceAsyncCommand { get; }
     public IAsyncRelayCommand ReadUTF8DataAsyncCommand { get; }
-    public IAsyncRelayCommand WriteDataAsyncCommand { get; }
+    public IAsyncRelayCommand WriteTimerDataAsyncCommand { get; }
+    public IAsyncRelayCommand WriteSetIdDataAsyncCommand { get; }
+    public IAsyncRelayCommand WriteSleepDataAsyncCommand { get; }
+    public IAsyncRelayCommand InfoAsyncCommand { get; }
     public IService ButtonPressedService { get; private set; }
     public ICharacteristic ButtonPressedCharacteristic { get; private set; }
     public ConnectPageViewModel(BLEService bluetoothLEService)
     {
+
         Title = $"Connect Page";
 
         BleService = bluetoothLEService;
@@ -24,19 +29,27 @@ public partial class ConnectPageViewModel : BaseViewModel
 
         ReadUTF8DataAsyncCommand = new AsyncRelayCommand(UTF8DataAsync);
 
+        WriteTimerDataAsyncCommand = new AsyncRelayCommand(DeviceWriteTimeDataAsync);
 
-        WriteDataAsyncCommand = new AsyncRelayCommand(DeviceWriteDataAsync);
+        WriteSetIdDataAsyncCommand = new AsyncRelayCommand(DeviceWriteIdDataAsync);
 
-        
+        WriteSleepDataAsyncCommand = new AsyncRelayCommand(DeviceWriteSleepDataAsync);
+
+        InfoAsyncCommand = new AsyncRelayCommand(ShowInfoDataAsync);
+
     }
 
     [ObservableProperty]
     string buttonPressedValue;
 
     [ObservableProperty]
-    string writeCommand;
+    string writeTime;
 
+    [ObservableProperty]
+    string writeId;
 
+    [ObservableProperty]
+    Color connectedColor = Color.FromRgb(0, 0, 0);
 
     public async Task UTF8DataAsync()
     {
@@ -59,19 +72,106 @@ public partial class ConnectPageViewModel : BaseViewModel
         ButtonPressedValue = bytes[0].ToString("X");
     }
 
-    async Task DeviceWriteDataAsync()
+    public async Task ShowInfoDataAsync()
     {
-        // LedR On [0L0211]
-        byte[] bytes = Encoding.ASCII.GetBytes(writeCommand);
         ButtonPressedService = await BleService.Device.GetServiceAsync(HockeyTargetUuids.HockeyTargetServiceUuid);
         if (ButtonPressedService != null)
         {
             ButtonPressedCharacteristic = await ButtonPressedService.GetCharacteristicAsync(HockeyTargetUuids.HockeyTargetCharacteristicUuid);
             if (ButtonPressedCharacteristic != null)
             {
-                await ButtonPressedCharacteristic.WriteAsync(bytes);
+                try
+                {
+                    await Shell.Current.DisplayAlert("Info", $"MAC: {BleService.Device.NativeDevice.ToString()}", "OK");
+                }
+                catch (Exception e)
+                {
+                    ButtonPressedValue = $"Problem ";
+                }
+
             }
         }
+    }
+
+    private async Task DeviceWriteIdDataAsync()
+    {
+        //01 00 0002
+        byte[] bytes = StringToByteArray(writeId);
+        var message = new byte[] { 0x01, bytes[0], bytes[1], bytes[2] };
+        ButtonPressedService = await BleService.Device.GetServiceAsync(HockeyTargetUuids.HockeyTargetServiceUuid);
+        if (ButtonPressedService != null)
+        {
+            ButtonPressedCharacteristic = await ButtonPressedService.GetCharacteristicAsync(HockeyTargetUuids.HockeyTargetCharacteristicUuid);
+            if (ButtonPressedCharacteristic != null)
+            {
+                try
+                {
+                    await ButtonPressedCharacteristic.WriteAsync(message);
+                    ButtonPressedValue = message[0].ToString() + "-" + message[1].ToString();
+                }
+                catch (Exception e)
+                {
+                    ButtonPressedValue = $"Problem {e.Message}";
+                }
+
+            }
+        }
+
+    }
+
+    public static byte[] StringToByteArray(string hex)
+    {
+        return Enumerable.Range(0, hex.Length)
+                         .Where(x => x % 2 == 0)
+                         .Select(x => Convert.ToByte(hex.Substring(x, 2), 16))
+                         .ToArray();
+    }
+
+    private async Task DeviceWriteTimeDataAsync()
+    {
+
+        byte[] bytes = BitConverter.GetBytes(Convert.ToInt32(writeTime));
+        var message = new byte[] { 0x02, 0x01, bytes[1], bytes[0] };
+        ButtonPressedService = await BleService.Device.GetServiceAsync(HockeyTargetUuids.HockeyTargetServiceUuid);
+        if (ButtonPressedService != null)
+        {
+            ButtonPressedCharacteristic = await ButtonPressedService.GetCharacteristicAsync(HockeyTargetUuids.HockeyTargetCharacteristicUuid);
+            if (ButtonPressedCharacteristic != null)
+            {
+                try
+                {
+                    await ButtonPressedCharacteristic.WriteAsync(message);
+                    ButtonPressedValue = message[2].ToString() + "-" + message[3].ToString();
+                }
+                catch (Exception e)
+                {
+                    ButtonPressedValue = $"Problem {e.Message}";
+                }
+            }
+        }
+    }
+    private async Task DeviceWriteSleepDataAsync()
+    {
+
+        var message = new byte[] { 0x05, 0x01 };
+        ButtonPressedService = await BleService.Device.GetServiceAsync(HockeyTargetUuids.HockeyTargetServiceUuid);
+        if (ButtonPressedService != null)
+        {
+            ButtonPressedCharacteristic = await ButtonPressedService.GetCharacteristicAsync(HockeyTargetUuids.HockeyTargetCharacteristicUuid);
+            if (ButtonPressedCharacteristic != null)
+            {
+                try
+                {
+                    await ButtonPressedCharacteristic.WriteAsync(message);
+                    ButtonPressedValue = message[0].ToString() + "-" + message[1].ToString();
+                }
+                catch (Exception e)
+                {
+                    ButtonPressedValue = $"Problem {e.Message}";
+                }
+            }
+        }
+
     }
 
     private async Task ConnectToDeviceCandidateAsync()
@@ -115,6 +215,8 @@ public partial class ConnectPageViewModel : BaseViewModel
         {
             IsBusy = true;
             IsHitted = true;
+            IsConnected = true;
+            ConnectedColor = Color.FromRgb(0, 255, 0);
             if (BleService.Device != null)
             {
                 if (BleService.Device.State == DeviceState.Connected)
@@ -169,6 +271,8 @@ public partial class ConnectPageViewModel : BaseViewModel
         {
             Debug.WriteLine($"Unable to connect to {BleService.NewDeviceCandidateFromHomePage.Name} {BleService.NewDeviceCandidateFromHomePage.Id}: {ex.Message}.");
             await Shell.Current.DisplayAlert($"{BleService.NewDeviceCandidateFromHomePage.Name}", $"Unable to connect to {BleService.NewDeviceCandidateFromHomePage.Name}.", "OK");
+            IsConnected = false;
+            ConnectedColor = Color.FromRgb(255, 0, 0);
         }
         finally
         {
@@ -211,6 +315,7 @@ public partial class ConnectPageViewModel : BaseViewModel
         try
         {
             IsBusy = true;
+            
             await BleService.Adapter.DisconnectDeviceAsync(BleService.Device);
         }
         catch (Exception ex)
@@ -221,10 +326,11 @@ public partial class ConnectPageViewModel : BaseViewModel
         finally
         {
             IsBusy = false;
-            ButtonPressedValue = "0l";
+            IsConnected = false;
             BleService.Device?.Dispose();
             BleService.Device = null;
-            await Shell.Current.GoToAsync("//TargetFinderPage", true);
+            ConnectedColor = Color.FromRgb(255, 0, 0);
+            //await Shell.Current.GoToAsync("//TargetFinderPage", true);
         }
     }
 

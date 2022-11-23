@@ -5,48 +5,121 @@
              xmlns:viewmodel="clr-namespace:BLE_Hockey.ViewModels"
              x:DataType="viewmodel:ConnectPageViewModel"
              Title="{Binding Title}">
-    <ScrollView>
 
-        <VerticalStackLayout
+
+    <Grid
+        Padding="10,0">
+        <ScrollView>
+
+            <VerticalStackLayout
                 Spacing="25"
-                Padding="30,0"
+                
                 VerticalOptions="Center">
 
-            <Label Text="{Binding ButtonPressedValue}"/>
-
-            <Entry x:Name="entry"
-                    Placeholder="Enter Command"
-                     Text="{Binding WriteCommand}"/>
-
-
-            <Button x:Name="ConnectToButton"
+                <Button x:Name="InfoButton"
                     Margin="8"
-                    Command="{Binding ConnectToDeviceCandidateAsyncCommand}"
                     IsEnabled="{Binding IsNotBusy}"
                     IsVisible="{Binding IsNotBusy}"
-                    Text="Connect" />
+                    Command="{Binding InfoAsyncCommand}"
+                    Text="I"
+                    HorizontalOptions="End"
+                    CornerRadius="60"
+                    HeightRequest="50" WidthRequest="50"/>
 
-            <Button x:Name="DisconnectFromButton"
-                    Margin="8"
-                    Command="{Binding DisconnectFromDeviceAsyncCommand}"
-                    IsEnabled="{Binding IsNotBusy}"
-                    IsVisible="{Binding IsNotBusy}"
-                    Text="Disconnect" />
+                <Label Text="{Binding ButtonPressedValue}"/>
 
-            <Button x:Name="ReadData"
+
+                <Grid x:Name="ConnectPageGrid"
+                    ColumnDefinitions="*,*"
+                    ColumnSpacing="6"
+                    RowDefinitions="Auto,Auto"
+                    RowSpacing="0">
+
+
+
+                    
+
+
+
+                </Grid>
+
+
+
+
+                <Button x:Name="ReadData"
                     Margin="8"
                     Command="{Binding ReadUTF8DataAsyncCommand}"
                     IsEnabled="{Binding IsNotBusy}"
                     IsVisible="{Binding IsNotBusy}"
                     Text="Read Data" />
 
-            <Button x:Name="WriteData"
+                <Entry x:Name="Entry"
+                   Margin="8"
+                    Placeholder="Enter Time"
+                     Text="{Binding WriteTime}"/>
+
+                <Button x:Name="WriteDataTimer"
                     Margin="8"
-                    Command="{Binding WriteDataAsyncCommand}"
+                    Command="{Binding WriteTimerDataAsyncCommand}"
                     IsEnabled="{Binding IsNotBusy}"
                     IsVisible="{Binding IsNotBusy}"
-                    Text="Write Data" />
+                    Text="Set Timer" />
 
-        </VerticalStackLayout>
-    </ScrollView>
+                <Entry x:Name="Entryc"
+                   Margin="8"
+                    Placeholder="Enter Id"
+                     Text="{Binding WriteId}"/>
+
+                <Button x:Name="WriteDataSetId"
+                    Margin="8"
+                    Command="{Binding WriteSetIdDataAsyncCommand}"
+                    IsEnabled="{Binding IsNotBusy}"
+                    IsVisible="{Binding IsNotBusy}"
+                    Text="Set Id" />
+
+                <Button x:Name="WriteDataSleep"
+                    Margin="8"
+                    Command="{Binding WriteSleepDataAsyncCommand}"
+                    IsEnabled="{Binding IsNotBusy}"
+                    IsVisible="{Binding IsNotBusy}"
+                    Text="Sleep" />
+
+            </VerticalStackLayout>
+
+
+
+
+        </ScrollView>
+
+        <Rectangle Fill="{Binding ConnectedColor}"
+                   Margin="0,8,0,0"
+                   RadiusX="30"
+                   WidthRequest="20"
+           HeightRequest="20"
+           HorizontalOptions="Start"
+                VerticalOptions="Start"/>
+
+            
+            
+            
+        <Button x:Name="ConnectToButton"
+                    Margin="0,0, 0, 20"
+                HorizontalOptions="End"
+                VerticalOptions="End"
+                    Command="{Binding ConnectToDeviceCandidateAsyncCommand}"
+                Clicked="ConnectToButton_Clicked"   
+                    Text="Connect" />
+
+
+        <Button x:Name="DisconnectFromButton"
+                    HorizontalOptions="End"
+                VerticalOptions="End"
+                    Margin="0, 0, -100, 20"
+                    BackgroundColor="#fa464c"
+                    BorderColor="Red"
+                    Command="{Binding DisconnectFromDeviceAsyncCommand}"
+                Clicked="DisconnectFromButton_Clicked"
+                    Text="Disconnect" />
+
+    </Grid>
 </ContentPage>

@@ -21,6 +21,11 @@
         bool isScanning;
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsNotConnected))]
+        bool isConnected;
+
+
+        [ObservableProperty]
         string title;
 
         public bool IsNotBusy => !IsBusy;
@@ -29,5 +34,7 @@
         public bool IsNotHitted => !IsHitted;
 
         public bool IsNotHitted1 => !IsHitted1;
+
+        public bool IsNotConnected => !IsConnected;
     }
 }
