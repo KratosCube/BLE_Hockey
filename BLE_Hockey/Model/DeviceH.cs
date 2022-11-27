@@ -5,5 +5,6 @@
         public Guid Id { get; internal set; }
         public string Name { get; internal set; }
         public int Rssi { get; internal set; }
+        public string ConId { get; internal set; }
     }
 }

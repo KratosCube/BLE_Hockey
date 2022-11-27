@@ -7,7 +7,7 @@
              xmlns:viewmodel="clr-namespace:BLE_Hockey.ViewModels"
              Title="GamePage"
              Style="{StaticResource navstyle}">
-    
+
 
     <Grid x:Name="GamePageGrid"
           BackgroundColor="{x:Binding ConnectedBgColor}">
@@ -27,23 +27,23 @@
             Grid.Row="1"
             Grid.Column="1"
             VerticalOptions="EndAndExpand">
-            
+
             <Label
                 Text="{Binding GameOutput}"
                 HorizontalOptions="CenterAndExpand"/>
-            
+
             <Label
                 Text="{Binding HitCounter}"
                 HorizontalOptions="CenterAndExpand"/>
-            
+
             <Label
                 Text="{Binding LoopCounter}"
                 HorizontalOptions="CenterAndExpand"/>
-            
+
             <Label
                 Text="{Binding ButtonPressedValue}"
                 HorizontalOptions="EndAndExpand"/>
-            
+
             <Button x:Name="StartGame"
                 Margin="8"
                 Command="{Binding StartGameAsyncCommand}"
@@ -57,7 +57,7 @@
                 IsEnabled="{Binding IsNotBusy}"
                 IsVisible="{Binding IsNotBusy}"
                 Text="Read Data"/>
-            
+
         </StackLayout>
 
         <CollectionView x:Name="HomePageCollectionView"
@@ -90,7 +90,7 @@
                 IsVisible="{Binding IsNotHitted}"
                 HorizontalOptions="StartAndExpand"
                 VerticalOptions="StartAndExpand"/>
-        
+
         <Image
                 Grid.Row="0"
                 Grid.Column="0"
@@ -108,7 +108,7 @@
                 IsVisible="{Binding IsNotHitted1}"
                 HorizontalOptions="EndAndExpand"
                 VerticalOptions="StartAndExpand"  />
-        
+
         <Image
                 Grid.Row="0"
                 Grid.Column="2"
@@ -117,7 +117,7 @@
                 IsVisible="{Binding IsHitted1}"
                 HorizontalOptions="StartAndExpand"
                 VerticalOptions="StartAndExpand"  />
-        
+
         <Image
                 Grid.Row="3"
                 Grid.Column="0"

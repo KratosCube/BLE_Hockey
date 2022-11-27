@@ -108,7 +108,10 @@
             {
                 try
                 {
+                    Vibration.Default.Cancel();
+                    TimeSpan vibrationLength = TimeSpan.FromSeconds(0.3);
                     await ShowToastAsync($"{e.Device.Name} is connected.");
+                    Vibration.Default.Vibrate(vibrationLength);
                 }
                 catch
                 {
@@ -123,7 +126,10 @@
             {
                 try
                 {
+                    Vibration.Default.Cancel();
+                    TimeSpan vibrationLength = TimeSpan.FromSeconds(1);
                     await ShowToastAsync($"{e.Device.Name} is disconnected.");
+                    Vibration.Default.Vibrate(vibrationLength);
                 }
                 catch
                 {

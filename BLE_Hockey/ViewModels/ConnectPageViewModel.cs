@@ -82,7 +82,8 @@ public partial class ConnectPageViewModel : BaseViewModel
             {
                 try
                 {
-                    await Shell.Current.DisplayAlert("Info", $"MAC: {BleService.Device.NativeDevice.ToString()}", "OK");
+                    await Shell.Current.DisplayAlert("Info", $"MAC: {BleService.Device.NativeDevice.ToString()}\r\n" +
+                        $"Id: {BleService.NewDeviceCandidateFromHomePage.ConId}", "OK");
                 }
                 catch (Exception e)
                 {
@@ -96,7 +97,17 @@ public partial class ConnectPageViewModel : BaseViewModel
     private async Task DeviceWriteIdDataAsync()
     {
         //01 00 0002
-        byte[] bytes = StringToByteArray(writeId);
+        if(Convert.ToInt32(writeId) <=1 && Convert.ToInt32(writeId) >=99)
+        {
+            return;
+        }
+        string id = writeId;
+        if(Convert.ToInt32(id) <= 9)
+        {
+            id = "0" + id;
+        }
+        byte[] bytes = StringToByteArray("010000"+id);
+        BleService.NewDeviceCandidateFromHomePage.ConId = id;
         var message = new byte[] { 0x01, bytes[0], bytes[1], bytes[2] };
         ButtonPressedService = await BleService.Device.GetServiceAsync(HockeyTargetUuids.HockeyTargetServiceUuid);
         if (ButtonPressedService != null)
@@ -216,7 +227,7 @@ public partial class ConnectPageViewModel : BaseViewModel
             IsBusy = true;
             IsHitted = true;
             IsConnected = true;
-            ConnectedColor = Color.FromRgb(0, 255, 0);
+            ConnectedColor = Color.FromRgb(86, 166, 49);
             if (BleService.Device != null)
             {
                 if (BleService.Device.State == DeviceState.Connected)

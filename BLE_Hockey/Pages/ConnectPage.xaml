@@ -67,7 +67,7 @@
 
                 <Entry x:Name="Entryc"
                    Margin="8"
-                    Placeholder="Enter Id"
+                    Placeholder="Enter Id 1-99"
                      Text="{Binding WriteId}"/>
 
                 <Button x:Name="WriteDataSetId"
